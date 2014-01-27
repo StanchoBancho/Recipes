@@ -126,7 +126,6 @@ public class Application{
 			
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				// TODO Auto-generated method stub
 				int selectedIndex = list.getSelectedIndex();
 				listModel.remove(selectedIndex);
 			}
@@ -140,8 +139,31 @@ public class Application{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				int selectedIndex = list.getSelectedIndex();
+				String ingredient = (String)listModel.get(selectedIndex);
+				textField.setText(ingredient);
+				listModel.remove(selectedIndex);
+				textField.requestFocus();
+			}
+		});
+	
+		//search button
+		btnSearchForRecipes = new JButton("Search For Recipes");
+		frame.getContentPane().add(btnSearchForRecipes, "12, 12");
+		btnSearchForRecipes.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
 				// TODO Auto-generated method stub
+				int[] select = {};
+				list.setSelectedIndices(select);
 				
+				try {
+					ResultScreen frame = new ResultScreen();
+					frame.setVisible(true);
+				} catch (Exception e1) {
+					e1.printStackTrace();
+				}
 			}
 		});
 		
@@ -214,19 +236,5 @@ public class Application{
 		lblIngredientList = new JLabel("Ingredient List");
 		lblIngredientList.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		frame.getContentPane().add(lblIngredientList, "2, 4, center, default");
-		
-		
-		btnSearchForRecipes = new JButton("Search For Recipes");
-		frame.getContentPane().add(btnSearchForRecipes, "12, 12");
-		btnSearchForRecipes.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// TODO Auto-generated method stub
-				int[] select = {};
-				list.setSelectedIndices(select);
-				
-			}
-		});
 	}
 }
