@@ -1,16 +1,23 @@
 package app;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
+
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.RowSpec;
+
 import javax.swing.JList;
 import javax.swing.JTextArea;
+
 import java.awt.Font;
+import java.util.ArrayList;
+
+import gate.Exercise3;
 
 public class ResultScreen extends JFrame {
 
@@ -19,6 +26,7 @@ public class ResultScreen extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
+	private DefaultListModel listModel;
 
 	/**
 	 * Create the frame.
@@ -57,11 +65,18 @@ public class ResultScreen extends JFrame {
 		lblNewLabel_1.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		contentPane.add(lblNewLabel_1, "4, 2, 7, 1, center, default");
 		
-		JList list = new JList();
+		listModel = new DefaultListModel();
+		JList list = new JList(listModel);
 		contentPane.add(list, "2, 4, 1, 2, fill, fill");
 		
 		JTextArea textArea = new JTextArea();
 		contentPane.add(textArea, "4, 4, 7, 2, fill, fill");
+		
+		
+		ArrayList<String> result = Exercise3.getCorpus();
+		for (String string : result) {
+			listModel.addElement(string);
+		}
 	}
 
 }

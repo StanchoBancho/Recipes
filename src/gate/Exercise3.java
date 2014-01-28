@@ -1,9 +1,9 @@
 package gate;
 
-
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.sun.org.apache.xerces.internal.dom.DocumentImpl;
@@ -21,11 +21,12 @@ import gate.util.persistence.PersistenceManager;
 //import com.ivita.evtima.utils.Utils;
 
 public class Exercise3 {
-  
-	public static Corpus getCorpus(){	
-		//System.setProperty("gate.home", "/Applications/gate-7.1-build4485-BIN");
 
-		// prepare the library and clean up the config files 	
+	public static ArrayList<String> getCorpus() {
+		// System.setProperty("gate.home",
+		// "/Applications/gate-7.1-build4485-BIN");
+
+		// prepare the library and clean up the config files
 		try {
 			Gate.init();
 			Gate.initConfigData();
@@ -33,12 +34,12 @@ public class Exercise3 {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 			return null;
-		} 
-		
-		//make visible
+		}
+
+		// make visible
 		MainFrame.getInstance().setVisible(true);
-		
-		//make a corpus
+
+		// make a corpus
 		Corpus corpus;
 		try {
 			corpus = Factory.newCorpus("docs");
@@ -48,10 +49,11 @@ public class Exercise3 {
 			return null;
 		}
 
-		//add documents to the corpus;
-		//the documents are in folder "docs" which is in the root folder of the project 
-		File inputDir = new File( "docs/");
-		for(File file : inputDir.listFiles()){
+		// add documents to the corpus;
+		// the documents are in folder "docs" which is in the root folder of the
+		// project
+		File inputDir = new File("docs/");
+		for (File file : inputDir.listFiles()) {
 			// create a new document
 			Document doc = null;
 			try {
@@ -63,15 +65,17 @@ public class Exercise3 {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			if(doc != null){
+			if (doc != null) {
 				corpus.add(doc);
 			}
 		}
-		
-		//load an application from a xgapp file which is in the root folder of the project
+
+		// load an application from a xgapp file which is in the root folder of
+		// the project
 		ConditionalSerialAnalyserController myapp = null;
 		try {
-			myapp = (ConditionalSerialAnalyserController) PersistenceManager.loadObjectFromFile(new File("app.xgapp"));
+			myapp = (ConditionalSerialAnalyserController) PersistenceManager
+					.loadObjectFromFile(new File("app.xgapp"));
 		} catch (PersistenceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -85,11 +89,11 @@ public class Exercise3 {
 			e.printStackTrace();
 			return null;
 		}
-		  
-		//set a corpus for the app
+
+		// set a corpus for the app
 		myapp.setCorpus(corpus);
-		
-		//execute the application
+
+		// execute the application
 		System.out.println("zapochna execute-a");
 		try {
 			myapp.execute();
@@ -98,13 +102,18 @@ public class Exercise3 {
 			e.printStackTrace();
 			return null;
 		}
-		
-		//for each document in the corpus, print the string of each annotation 
-		//of type Person which is in the default annotation set
-		for(Document doc : corpus){
-			for(Annotation ann : doc.getAnnotations().get("Person")){
+
+		// for each document in the corpus, print the string of each annotation
+		// of type Person which is in the default annotation set
+		ArrayList<String> array = new ArrayList<String>();
+		for (Document doc : corpus) {
+			for (Annotation ann : doc.getAnnotations().get("Person")) {
 				try {
-					System.out.println(doc.getContent().getContent(ann.getStartNode().getOffset(),ann.getEndNode().getOffset()));
+					array.add(ann.toString());
+					// array.add(doc.getContent().getContent(ann.getStartNode().getOffset(),ann.getEndNode().getOffset()));
+					System.out.println(doc.getContent().getContent(
+							ann.getStartNode().getOffset(),
+							ann.getEndNode().getOffset()));
 				} catch (InvalidOffsetException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
@@ -112,6 +121,6 @@ public class Exercise3 {
 			}
 		}
 		System.out.println("svurshvam");
-	return corpus;
-}
+		return array;
+	}
 }

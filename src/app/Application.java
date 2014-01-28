@@ -1,5 +1,8 @@
 package app;
 
+import gate.StandAloneAnnie;
+import gate.util.GateException;
+
 import java.awt.EventQueue;
 
 import javax.swing.DefaultListModel;
@@ -26,6 +29,9 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import java.awt.Font;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class Application{
 
@@ -236,5 +242,16 @@ public class Application{
 		lblIngredientList = new JLabel("Ingredient List");
 		lblIngredientList.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		frame.getContentPane().add(lblIngredientList, "2, 4, center, default");
+		
+		try {
+			String[] params = {"file:docs/de.txt", "file:docs/eu_slap.txt", "file:docs/eu_zone.txt"};
+			StandAloneAnnie.doTest(params);
+		} catch (GateException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 	}
 }
