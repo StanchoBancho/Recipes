@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.launching.macosx.MacOSXType/Java SE 7 [1.7.0_45]"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/Applications/gate-7.1-build4485-BIN/bin/gate.jar"/>
 	<classpathentry kind="lib" path="/Applications/gate-7.1-build4485-BIN/lib/ant-launcher.jar"/>
 	<classpathentry kind="lib" path="/Applications/gate-7.1-build4485-BIN/lib/ant.jar"/>

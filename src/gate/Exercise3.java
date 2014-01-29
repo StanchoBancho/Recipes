@@ -12,6 +12,7 @@ import gate.*;
 import gate.creole.ConditionalSerialAnalyserController;
 import gate.creole.ExecutionException;
 import gate.creole.ResourceInstantiationException;
+import gate.creole.SerialAnalyserController;
 import gate.gui.*;
 import gate.persist.PersistenceException;
 import gate.util.GateException;
@@ -37,7 +38,7 @@ public class Exercise3 {
 		}
 
 		// make visible
-		MainFrame.getInstance().setVisible(true);
+		MainFrame.getInstance().setVisible(false);
 
 		// make a corpus
 		Corpus corpus;
@@ -74,8 +75,7 @@ public class Exercise3 {
 		// the project
 		ConditionalSerialAnalyserController myapp = null;
 		try {
-			myapp = (ConditionalSerialAnalyserController) PersistenceManager
-					.loadObjectFromFile(new File("app.xgapp"));
+			myapp = (ConditionalSerialAnalyserController) PersistenceManager.loadObjectFromFile(new File("app.xgapp"));
 		} catch (PersistenceException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

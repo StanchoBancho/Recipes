@@ -11,7 +11,6 @@ import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.ListSelectionModel;
 
-
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.layout.RowSpec;
@@ -30,16 +29,14 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import java.awt.Font;
-import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 public class Application{
 
 	private JFrame frame;
 	private JTextField textField;
-	private DefaultListModel listModel;
-	private JList list;
+	private DefaultListModel<String> listModel;
+	private JList<String> list;
 	private JLabel lblIngredientList;
 	private JButton btnAddIngredient;
 	private JButton btnSearchForRecipes;
@@ -213,8 +210,8 @@ public class Application{
 		
 		setupTextField();
 		
-		listModel = new DefaultListModel();
-		list = new JList(listModel);
+		listModel = new DefaultListModel<String>();
+		list = new JList<String>(listModel);
 		list.setValueIsAdjusting(true);
 		frame.getContentPane().add(list, "2, 6, 9, 6, fill, fill");
 		list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
@@ -244,15 +241,15 @@ public class Application{
 		lblIngredientList.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		frame.getContentPane().add(lblIngredientList, "2, 4, center, default");
 		
-		try {
-			String[] params = {"file:docs/de.txt", "file:docs/eu_slap.txt", "file:docs/eu_zone.txt"};
-			StandAloneAnnie.doTest(params);
-		} catch (GateException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		} catch (IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+//		try {
+//			String[] params = {"file:docs/Untitled.txt"};//, "file:docs/eu_slap.txt", "file:docs/eu_zone.txt"};
+//			StandAloneAnnie.doTest(params);
+//		} catch (GateException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		} catch (IOException e1) {
+//			// TODO Auto-generated catch block
+//			e1.printStackTrace();
+//		}
 	}
 }
