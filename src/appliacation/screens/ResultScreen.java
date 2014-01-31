@@ -20,21 +20,20 @@ import java.util.ArrayList;
 
 import gate.Exercise3;
 
-public class ResultScreen extends MenuFrame {
+public class ResultScreen extends JFrame {
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private DefaultListModel listModel;
+	private DefaultListModel<String> listModel;
 	public static JMenuBar menuBar;
 
 	/**
 	 * Create the frame.
 	 */
 	public ResultScreen() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 700, 550);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -67,8 +66,8 @@ public class ResultScreen extends MenuFrame {
 		lblNewLabel_1.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		contentPane.add(lblNewLabel_1, "4, 2, 7, 1, center, default");
 		
-		listModel = new DefaultListModel();
-		JList list = new JList(listModel);
+		listModel = new DefaultListModel<String>();
+		JList<String> list = new JList<String>(listModel);
 		contentPane.add(list, "2, 4, 1, 2, fill, fill");
 		
 		JTextArea textArea = new JTextArea();

@@ -1,6 +1,5 @@
 package appliacation.screens;
 
-import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -9,11 +8,12 @@ import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.RowSpec;
 
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.JTextPane;
 
-public class AddRecipeScreen extends MenuFrame {
+public class AddRecipeScreen extends JFrame {
 	/**
 	 * 
 	 */
@@ -26,8 +26,7 @@ public class AddRecipeScreen extends MenuFrame {
 	public AddRecipeScreen() {
 		
 		
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 700, 500);
+		setBounds(0, 0, 700, 500);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);

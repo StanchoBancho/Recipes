@@ -1,20 +1,16 @@
 package appliacation.screens;
 
-import gate.StandAloneAnnie;
-import gate.util.GateException;
-
-import java.awt.EventQueue;
-import java.awt.MenuBar;
+//import gate.StandAloneAnnie;
+//import gate.util.GateException;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.ListSelectionModel;
-import javax.swing.UIManager;
-import javax.swing.UnsupportedLookAndFeelException;
 
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -28,19 +24,25 @@ import java.awt.event.FocusListener;
 
 import javax.swing.JList;
 import javax.swing.JLabel;
+import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import java.awt.Font;
-import java.io.IOException;
 
 import javax.swing.JMenuItem;
 
-public class SearchScreen{
+public class SearchScreen extends JFrame {
 
-	public JFrame frame;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
+	private JPanel contentPane;
+
 	private JTextField textField;
 	private DefaultListModel<String> listModel;
 	private JList<String> list;
@@ -56,18 +58,10 @@ public class SearchScreen{
 	private JMenuItem mntmNewMenuItem_2;
 
 	
-
-	/**
-	 * Create the application.
-	 */
-	public SearchScreen() {
-		initialize();
-	}
-	
-	
 	private void setupTextField(){
+		
 		textField = new JTextField();
-		frame.getContentPane().add(textField, "2, 2, 9, 1, fill, default");
+		contentPane.add(textField, "2, 2, 9, 1, fill, default");
 		textField.setColumns(10);
 		textField.getDocument().addDocumentListener(new DocumentListener() {
 			  public void changedUpdate(DocumentEvent e) {
@@ -118,11 +112,11 @@ public class SearchScreen{
 			}
 		});
 		btnAddIngredient.setEnabled(false);
-		frame.getContentPane().add(btnAddIngredient, "12, 2");
+		contentPane.add(btnAddIngredient, "12, 2");
 	
 		//delete button
 		btnDeleteIngredient = new JButton("Delete Ingredient");
-		frame.getContentPane().add(btnDeleteIngredient, "12, 7");
+		contentPane.add(btnDeleteIngredient, "12, 7");
 		btnDeleteIngredient.setEnabled(false);
 		btnDeleteIngredient.addActionListener(new ActionListener() {
 			
@@ -135,7 +129,7 @@ public class SearchScreen{
 		
 		//edit button
 		btnEditIngredient = new JButton("Edit Ingredient");
-		frame.getContentPane().add(btnEditIngredient, "12, 6");
+		contentPane.add(btnEditIngredient, "12, 6");
 		btnEditIngredient.setEnabled(false);
 		btnEditIngredient.addActionListener(new ActionListener() {
 			
@@ -151,7 +145,7 @@ public class SearchScreen{
 	
 		//search button
 		btnSearchForRecipes = new JButton("Search For Recipes");
-		frame.getContentPane().add(btnSearchForRecipes, "12, 12");
+		contentPane.add(btnSearchForRecipes, "12, 12");
 		btnSearchForRecipes.addActionListener(new ActionListener() {
 			
 			@Override
@@ -173,12 +167,13 @@ public class SearchScreen{
 	/**
 	 * Initialize the contents of the frame.
 	 */
-	private void initialize() {
-		frame = new JFrame();
-//		frame.setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
-		frame.setBounds(100, 100, 702, 450);
-//		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(new FormLayout(new ColumnSpec[] {
+	public SearchScreen() {
+		
+		setBounds(0, 800, 700, 500);
+		contentPane = new JPanel();
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		setContentPane(contentPane);		
+		contentPane.setLayout(new FormLayout(new ColumnSpec[] {
 				FormFactory.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("max(100dlu;default):grow"),
 				FormFactory.RELATED_GAP_COLSPEC,
@@ -221,7 +216,7 @@ public class SearchScreen{
         mntmNewMenuItem_2 = new JMenuItem("Browse Recipes");
         fileMenu.add(mntmNewMenuItem_2);
         
-        frame.setJMenuBar(menuBar);
+        setJMenuBar(menuBar);
         
         
 		setupTextField();
@@ -229,7 +224,7 @@ public class SearchScreen{
 		listModel = new DefaultListModel<String>();
 		list = new JList<String>(listModel);
 		list.setValueIsAdjusting(true);
-		frame.getContentPane().add(list, "2, 6, 9, 6, fill, fill");
+		contentPane.add(list, "2, 6, 9, 6, fill, fill");
 		list.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		list.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 		list.addListSelectionListener(new ListSelectionListener() {
@@ -255,11 +250,8 @@ public class SearchScreen{
 		
 		lblIngredientList = new JLabel("Ingredient List");
 		lblIngredientList.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
-		frame.getContentPane().add(lblIngredientList, "2, 4, center, default");
-		
+		contentPane.add(lblIngredientList, "2, 4, center, default");
 
-
-		
 		
 //		try {
 //			String[] params = {"file:docs/Untitled.txt"};//, "file:docs/eu_slap.txt", "file:docs/eu_zone.txt"};
