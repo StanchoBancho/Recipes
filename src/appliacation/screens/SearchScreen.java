@@ -1,15 +1,20 @@
-package app;
+package appliacation.screens;
 
 import gate.StandAloneAnnie;
 import gate.util.GateException;
 
 import java.awt.EventQueue;
+import java.awt.MenuBar;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JTextField;
 import javax.swing.JButton;
 import javax.swing.ListSelectionModel;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -31,9 +36,11 @@ import javax.swing.event.ListSelectionListener;
 import java.awt.Font;
 import java.io.IOException;
 
-public class Application{
+import javax.swing.JMenuItem;
 
-	private JFrame frame;
+public class SearchScreen{
+
+	public JFrame frame;
 	private JTextField textField;
 	private DefaultListModel<String> listModel;
 	private JList<String> list;
@@ -42,27 +49,18 @@ public class Application{
 	private JButton btnSearchForRecipes;
 	private JButton btnEditIngredient;
 	private JButton btnDeleteIngredient;
+	
+	public  JMenuBar menuBar;
+	private JMenuItem mntmNewMenuItem;
+	private JMenuItem mntmNewMenuItem_1;
+	private JMenuItem mntmNewMenuItem_2;
 
-	/**
-	 * Launch the application.
-	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					Application window = new Application();
-					window.frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	
 
 	/**
 	 * Create the application.
 	 */
-	public Application() {
+	public SearchScreen() {
 		initialize();
 	}
 	
@@ -177,8 +175,9 @@ public class Application{
 	 */
 	private void initialize() {
 		frame = new JFrame();
+//		frame.setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
 		frame.setBounds(100, 100, 702, 450);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(new FormLayout(new ColumnSpec[] {
 				FormFactory.RELATED_GAP_COLSPEC,
 				ColumnSpec.decode("max(100dlu;default):grow"),
@@ -208,6 +207,23 @@ public class Application{
 				FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC,}));
 		
+		
+		menuBar = new JMenuBar();
+        JMenu fileMenu = new JMenu("File");
+        menuBar.add(fileMenu);
+
+        mntmNewMenuItem = new JMenuItem("Add New Recipe");
+        fileMenu.add(mntmNewMenuItem);
+        
+        mntmNewMenuItem_1 = new JMenuItem("Search");
+        fileMenu.add(mntmNewMenuItem_1);
+        
+        mntmNewMenuItem_2 = new JMenuItem("Browse Recipes");
+        fileMenu.add(mntmNewMenuItem_2);
+        
+        frame.setJMenuBar(menuBar);
+        
+        
 		setupTextField();
 		
 		listModel = new DefaultListModel<String>();
@@ -240,6 +256,10 @@ public class Application{
 		lblIngredientList = new JLabel("Ingredient List");
 		lblIngredientList.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		frame.getContentPane().add(lblIngredientList, "2, 4, center, default");
+		
+
+
+		
 		
 //		try {
 //			String[] params = {"file:docs/Untitled.txt"};//, "file:docs/eu_slap.txt", "file:docs/eu_zone.txt"};

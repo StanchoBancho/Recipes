@@ -1,7 +1,8 @@
-package app;
+package appliacation.screens;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
+import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.JLabel;
@@ -19,7 +20,7 @@ import java.util.ArrayList;
 
 import gate.Exercise3;
 
-public class ResultScreen extends JFrame {
+public class ResultScreen extends MenuFrame {
 
 	/**
 	 * 
@@ -27,6 +28,7 @@ public class ResultScreen extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private DefaultListModel listModel;
+	public static JMenuBar menuBar;
 
 	/**
 	 * Create the frame.
