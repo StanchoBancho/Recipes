@@ -1,7 +1,14 @@
 package appliacation.screens;
 
+import gate.GateManager;
+
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.text.html.HTMLDocument;
+import javax.swing.text.html.HTMLEditorKit;
 
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -19,13 +26,19 @@ public class AddRecipeScreen extends JFrame {
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
+	private JButton btnAddRecipe;
+	private JButton btnSaveRecipe;
+	private JTextPane textPane;
+	private boolean isRecipeProcessed;
+	private GateManager gateManager;
+	private String recipeText;
+	private String parsedText;
 
 	/**
 	 * Create the frame.
 	 */
 	public AddRecipeScreen() {
-		
-		
+		isRecipeProcessed = false;
 		setBounds(0, 0, 700, 500);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -50,14 +63,54 @@ public class AddRecipeScreen extends JFrame {
 		JLabel lblNewRecipeText = new JLabel("New Recipe Text");
 		contentPane.add(lblNewRecipeText, "2, 2, 4, 2, center, default");
 		
-		JTextPane textPane = new JTextPane();
+		textPane = new JTextPane();
+		textPane.setContentType("text/html");
 		contentPane.add(textPane, "2, 4, 4, 1, fill, fill");
 		
-		JButton btnAddRecipe = new JButton("Text Process");
+		btnAddRecipe = new JButton("Text Process");
+		btnAddRecipe.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (isRecipeProcessed){
+					btnAddRecipe.setText("Text Process");
+					btnSaveRecipe.setEnabled(false);
+					
+					textPane.setText(recipeText);
+					textPane.setEditable(true);
+				}
+				else{
+					if(gateManager == null){
+						gateManager = new GateManager();
+					}
+					btnAddRecipe.setText("Edit Recipe Text");
+					textPane.setEditable(false);
+					
+					
+					
+					
+					recipeText = textPane.getText();
+					parsedText = gateManager.processRecipe(recipeText);
+					if(parsedText != null){
+						textPane.setText(parsedText);
+					}
+					btnSaveRecipe.setEnabled(true);
+				}
+				isRecipeProcessed = !isRecipeProcessed;
+			}
+		});
 		contentPane.add(btnAddRecipe, "2, 7");
 		
-		JButton btnSaveRecipe = new JButton("Save Recipe");
+		btnSaveRecipe = new JButton("Save Recipe");
 		contentPane.add(btnSaveRecipe, "5, 7");
 	}
 
+	
+	private void saveProcessedRecipeText(String text){
+		
+	}
+	
+	private void processEnteredRecipeText(String text){
+		
+	}
 }

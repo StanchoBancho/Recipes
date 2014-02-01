@@ -20,12 +20,10 @@ package gate;
 
 import java.util.*;
 import java.io.*;
-import java.net.*;
 
-import gate.*;
-import gate.creole.*;
 import gate.util.*;
 import gate.util.persistence.PersistenceManager;
+import gate.corpora.DocumentImpl;
 import gate.corpora.RepositioningInfo;
 
 /**
@@ -49,7 +47,17 @@ public class StandAloneAnnie  {
   public void initAnnie() throws GateException, IOException {
     Out.prln("Initialising ANNIE...");
 
+    try {
+		Gate.init();
+		Gate.initConfigData();
+	} catch (GateException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+    
+    
     // load the ANNIE application from the saved state in plugins/ANNIE
+    File gateHome = Gate.gateHome;
     File pluginsHome = Gate.getPluginsHome();
     File anniePlugin = new File(pluginsHome, "ANNIE");
     File annieGapp = new File(anniePlugin, "ANNIE_with_defaults.gapp");
@@ -77,60 +85,42 @@ public class StandAloneAnnie  {
    * This code will run with all the documents in memory - if you
    * want to unload each from memory after use, add code to store
    * the corpus in a DataStore.
+ * @return 
    */
-  public static void doTest(String [] args) throws GateException, IOException {
+  public String processText(String text) throws GateException, IOException {
     // initialise the GATE library
     Out.prln("Initialising GATE...");
     Gate.init();
     Out.prln("...GATE initialised");
 
     // initialise ANNIE (this may take several minutes)
-    StandAloneAnnie annie = new StandAloneAnnie();
-    annie.initAnnie();
 
     // create a GATE corpus and add a document for each command-line
     // argument
     Corpus corpus = Factory.newCorpus("StandAloneAnnie corpus");
-    for(int i = 0; i < args.length; i++) {
-      URL u = new URL(args[i]);
-      FeatureMap params = Factory.newFeatureMap();
-      params.put("sourceUrl", u);
-      params.put("preserveOriginalContent", new Boolean(true));
-      params.put("collectRepositioningInfo", new Boolean(true));
-      Out.prln("Creating doc for " + u);
-      Document doc = (Document)
-        Factory.createResource("gate.corpora.DocumentImpl", params);
-      corpus.add(doc);
-    } // for each of args
-
-//    File inputDir = new File("docs/");
-//	for (File file : inputDir.listFiles()) {
-//		// create a new document
-//		Document doc = null;
-//		try {
-//			doc = Factory.newDocument(file.toURI().toURL());
-//		} catch (ResourceInstantiationException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		} catch (MalformedURLException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-//		if (doc != null) {
-//			corpus.add(doc);
-//		}
-//	}
+//    DocumentImpl doc = new DocumentImpl();
+//    Document initialDoc = (Document)Factory.newDocument(text);
+//    initialDoc.setPreserveOriginalContent(true);
+//    initialDoc.setCollectRepositioningInfo(true);
+//   
+    
+    FeatureMap params = Factory.newFeatureMap();
+    params.put("stringContent", text);
+    params.put("preserveOriginalContent", new Boolean(true));
+    params.put("collectRepositioningInfo", new Boolean(true));
+    Document initialDoc = (Document) Factory.createResource("gate.corpora.DocumentImpl", params);
     
     
     
+    corpus.add(initialDoc); 
     
     // tell the pipeline about the corpus and run it
-    annie.setCorpus(corpus);
-    annie.execute();
+    setCorpus(corpus);
+    execute();
 
     // for each document, get an XML document with the
     // person and location names added
-    Iterator iter = corpus.iterator();
+    Iterator<Document> iter = corpus.iterator();
     int count = 0;
     String startTagPart_1 = "<span GateID=\"";
     String startTagPart_2 = "\" title=\"";
@@ -140,21 +130,19 @@ public class StandAloneAnnie  {
     while(iter.hasNext()) {
       Document doc = (Document) iter.next();
       AnnotationSet defaultAnnotSet = doc.getAnnotations();
-      Set annotTypesRequired = new HashSet();
+      Set<String> annotTypesRequired = new HashSet<String>();
       annotTypesRequired.add("Person");
       annotTypesRequired.add("Location");
-      Set<Annotation> peopleAndPlaces =
-        new HashSet<Annotation>(defaultAnnotSet.get(annotTypesRequired));
+      Set<Annotation> peopleAndPlaces = new HashSet<Annotation>(defaultAnnotSet.get(annotTypesRequired));
 
       FeatureMap features = doc.getFeatures();
-      String originalContent = (String)
-        features.get(GateConstants.ORIGINAL_DOCUMENT_CONTENT_FEATURE_NAME);
-      RepositioningInfo info = (RepositioningInfo)
-        features.get(GateConstants.DOCUMENT_REPOSITIONING_INFO_FEATURE_NAME);
+      String originalContent = (String) features.get(GateConstants.ORIGINAL_DOCUMENT_CONTENT_FEATURE_NAME);
+      RepositioningInfo info = (RepositioningInfo) features.get(GateConstants.DOCUMENT_REPOSITIONING_INFO_FEATURE_NAME);
 
       ++count;
-      File file = new File("StANNIE_" + count + ".HTML");
-      Out.prln("File name: '"+file.getAbsolutePath()+"'");
+//      File file = new File("StANNIE_" + count + ".HTML");
+//      Out.prln("File name: '"+file.getAbsolutePath()+"'");
+     
       if(originalContent != null && info != null) {
         Out.prln("OrigContent and reposInfo existing. Generate file...");
 
@@ -168,6 +156,7 @@ public class StandAloneAnnie  {
         } // while
 
         StringBuffer editableContent = new StringBuffer(originalContent);
+        editableContent.append("<html>");
         long insertPositionEnd;
         long insertPositionStart;
         // insert anotation tags backward
@@ -191,10 +180,12 @@ public class StandAloneAnnie  {
             editableContent.insert((int)insertPositionStart, startTagPart_1);
           } // if
         } // for
+        editableContent.append("<html>");
+        return editableContent.toString();
 
-        FileWriter writer = new FileWriter(file);
-        writer.write(editableContent.toString());
-        writer.close();
+//        FileWriter writer = new FileWriter(file);
+//        writer.write(editableContent.toString());
+//        writer.close();
       } // if - should generate
       else if (originalContent != null) {
         Out.prln("OrigContent existing. Generate file...");
@@ -209,6 +200,7 @@ public class StandAloneAnnie  {
         } // while
 
         StringBuffer editableContent = new StringBuffer(originalContent);
+        editableContent.append("<html>");
         long insertPositionEnd;
         long insertPositionStart;
         // insert anotation tags backward
@@ -230,23 +222,26 @@ public class StandAloneAnnie  {
             editableContent.insert((int)insertPositionStart, startTagPart_1);
           } // if
         } // for
-
-        FileWriter writer = new FileWriter(file);
-        writer.write(editableContent.toString());
-        writer.close();
+        editableContent.append("<html>");
+        return editableContent.toString();
+//        FileWriter writer = new FileWriter(file);
+//        writer.write(editableContent.toString());
+//        writer.close();
       }
       else {
         Out.prln("Content : "+originalContent);
         Out.prln("Repositioning: "+info);
       }
 
-      String xmlDocument = doc.toXml(peopleAndPlaces, false);
-      String fileName = new String("StANNIE_toXML_" + count + ".HTML");
-      FileWriter writer = new FileWriter(fileName);
-      writer.write(xmlDocument);
-      writer.close();
+//      String xmlDocument = doc.toXml(peopleAndPlaces, false);
+//      String fileName = new String("StANNIE_toXML_" + count + ".HTML");
+//      FileWriter writer = new FileWriter(fileName);
+//      writer.write(xmlDocument);
+//      writer.close();
 
     } // for each doc
+
+    return null;
   } // main
 
   /**

@@ -16,7 +16,34 @@ import gate.creole.ir.*;
 import gate.creole.ir.lucene.*;
 
 public class GateManager {
-
+	private StandAloneAnnie annie;
+	
+	
+	public GateManager(){
+		annie = new StandAloneAnnie(); 
+	    try {
+			annie.initAnnie();
+		} catch (GateException | IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public String processRecipe(String recipe){
+		String result = null;
+		if(annie != null){
+	    	try {
+				result = annie.processText(recipe);
+			} catch (GateException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	    	if(result != null){
+	    		return result;
+	    	}
+	    }
+		return null;
+	}
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		// initialise the GATE library
