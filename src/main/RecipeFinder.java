@@ -1,5 +1,7 @@
 package main;
 
+import gate.GateManager;
+
 import java.awt.EventQueue;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,9 +20,13 @@ public class RecipeFinder {
 	private AddRecipeScreen addRecipeScreen;
 	private SearchScreen searchRecipeScreen;
 	private JMenuBar menuBar;
-
+	private GateManager shareGateManager;
 	// TO:DO:
 	// static private boolean PreviewRecipesScreen;
+
+	public GateManager getShareGateManager() {
+		return shareGateManager;
+	}
 
 	/**
 	 * Launch the application.
@@ -28,6 +34,7 @@ public class RecipeFinder {
 
 	public RecipeFinder() {
 		createMenuBarOfApplication();
+		shareGateManager = new GateManager();
 	}
 
 	private void createMenuBarOfApplication() {
@@ -97,8 +104,11 @@ public class RecipeFinder {
 					recipeFinder.searchRecipeScreen.setTitle("Search");
 					// recipeFinder.searchRecipeScreen.delegate = recipeFinder;
 
-					recipeFinder.addRecipeScreen = new AddRecipeScreen();
-					recipeFinder.addRecipeScreen.setVisible(true);
+					AddRecipeScreen addRecipeScreen = new AddRecipeScreen(); 
+					addRecipeScreen.setVisible(true);
+					addRecipeScreen.setGateManager(recipeFinder.getShareGateManager());
+					recipeFinder.addRecipeScreen = addRecipeScreen;
+					
 					// recipeFinder.addRecipeScreen.delegate = recipeFinder;
 
 					final WindowListener listener = new WindowAdapter() {

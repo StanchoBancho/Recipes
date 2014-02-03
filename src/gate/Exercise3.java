@@ -4,22 +4,14 @@ import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.List;
-
-import com.sun.org.apache.xerces.internal.dom.DocumentImpl;
-
-import gate.*;
 import gate.creole.ConditionalSerialAnalyserController;
 import gate.creole.ExecutionException;
 import gate.creole.ResourceInstantiationException;
-import gate.creole.SerialAnalyserController;
 import gate.gui.*;
 import gate.persist.PersistenceException;
 import gate.util.GateException;
 import gate.util.InvalidOffsetException;
 import gate.util.persistence.PersistenceManager;
-
-//import com.ivita.evtima.utils.Utils;
 
 public class Exercise3 {
 

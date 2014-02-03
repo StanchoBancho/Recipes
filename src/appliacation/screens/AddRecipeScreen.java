@@ -4,35 +4,48 @@ import gate.GateManager;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
 
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
-import javax.swing.text.html.HTMLDocument;
-import javax.swing.text.html.HTMLEditorKit;
 
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
 import com.jgoodies.forms.factories.FormFactory;
 import com.jgoodies.forms.layout.RowSpec;
 
+import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.JTextPane;
 
+import org.apache.commons.io.FilenameUtils;
+
 public class AddRecipeScreen extends JFrame {
 	/**
 	 * 
 	 */
+	public GateManager gateManager;
+
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private JButton btnAddRecipe;
 	private JButton btnSaveRecipe;
 	private JTextPane textPane;
 	private boolean isRecipeProcessed;
-	private GateManager gateManager;
 	private String recipeText;
 	private String parsedText;
+
+	public GateManager getGateManager() {
+		return gateManager;
+	}
+
+	public void setGateManager(GateManager gateManager) {
+		this.gateManager = gateManager;
+	}
 
 	/**
 	 * Create the frame.
@@ -51,21 +64,27 @@ public class AddRecipeScreen extends JFrame {
 				ColumnSpec.decode("313px:grow"),
 				FormFactory.RELATED_GAP_COLSPEC,},
 			new RowSpec[] {
+				RowSpec.decode("10dlu"),
+				FormFactory.DEFAULT_ROWSPEC,
+				RowSpec.decode("10dlu"),
+				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_ROWSPEC,
+				FormFactory.DEFAULT_ROWSPEC,
 				FormFactory.RELATED_GAP_ROWSPEC,
 				RowSpec.decode("15dlu"),
 				FormFactory.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("max(219dlu;default):grow"),
-				FormFactory.DEFAULT_ROWSPEC,
+				RowSpec.decode("max(174dlu;default):grow"),
+				RowSpec.decode("7dlu"),
 				FormFactory.RELATED_GAP_ROWSPEC,
 				RowSpec.decode("28px"),
-				FormFactory.RELATED_GAP_ROWSPEC,}));
+				RowSpec.decode("10dlu"),}));
 		
 		JLabel lblNewRecipeText = new JLabel("New Recipe Text");
-		contentPane.add(lblNewRecipeText, "2, 2, 4, 2, center, default");
+		contentPane.add(lblNewRecipeText, "2, 2, 4, 1, center, default");
 		
 		textPane = new JTextPane();
 		textPane.setContentType("text/html");
-		contentPane.add(textPane, "2, 4, 4, 1, fill, fill");
+		contentPane.add(textPane, "2, 4, 4, 7, fill, fill");
 		
 		btnAddRecipe = new JButton("Text Process");
 		btnAddRecipe.addActionListener(new ActionListener() {
@@ -80,14 +99,9 @@ public class AddRecipeScreen extends JFrame {
 					textPane.setEditable(true);
 				}
 				else{
-					if(gateManager == null){
-						gateManager = new GateManager();
-					}
+					
 					btnAddRecipe.setText("Edit Recipe Text");
 					textPane.setEditable(false);
-					
-					
-					
 					
 					recipeText = textPane.getText();
 					parsedText = gateManager.processRecipe(recipeText);
@@ -99,18 +113,52 @@ public class AddRecipeScreen extends JFrame {
 				isRecipeProcessed = !isRecipeProcessed;
 			}
 		});
-		contentPane.add(btnAddRecipe, "2, 7");
+		contentPane.add(btnAddRecipe, "2, 13");
 		
 		btnSaveRecipe = new JButton("Save Recipe");
-		contentPane.add(btnSaveRecipe, "5, 7");
+		contentPane.add(btnSaveRecipe, "5, 13");
+		btnSaveRecipe.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String recipeText = textPane.getText();
+				initiateRecipeSavingProcess(recipeText);
+			}
+		});
 	}
+	
+	private void initiateRecipeSavingProcess(String text){
+		String recipeDirectory =  new File(System.getProperty("user.dir"), "recipes-list").toString(); 
+		JFileChooser chooser = new JFileChooser(recipeDirectory);
+		
+		
+		int returnVal = chooser.showSaveDialog(this);
+		if (returnVal == JFileChooser.APPROVE_OPTION) {
+		    FileOutputStream stream = null;
+		    PrintStream out = null;
+		    try {
+		        File file = chooser.getSelectedFile();
+		        
+		        if (FilenameUtils.getExtension(file.getName()).equalsIgnoreCase("html")) {
+		            // filename is OK as-is
+		        } else {
+		            file = new File(file.getParentFile(), FilenameUtils.getBaseName(file.getName())+".html"); // ALTERNATIVELY: remove the extension (if any) and replace it with ".xml"
+		        }
+		        
+		        stream = new FileOutputStream(file); 
+		        out = new PrintStream(stream);
+		        out.print(text);                  //This will overwrite existing contents
 
-	
-	private void saveProcessedRecipeText(String text){
-		
-	}
-	
-	private void processEnteredRecipeText(String text){
-		
+		    } catch (Exception ex) {
+		        //do something
+		    } finally {
+		        try {
+		            if(stream!=null) stream.close();
+		            if(out!=null) out.close();
+		        } catch (Exception ex) {
+		            //do something
+		        }
+		    }
+		}
 	}
 }
