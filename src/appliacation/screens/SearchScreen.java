@@ -168,7 +168,6 @@ public class SearchScreen extends JFrame {
 	 * Initialize the contents of the frame.
 	 */
 	public SearchScreen() {
-		
 		setBounds(0, 800, 700, 500);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
