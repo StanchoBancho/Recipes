@@ -23,7 +23,6 @@ import java.io.*;
 
 import gate.util.*;
 import gate.util.persistence.PersistenceManager;
-import gate.corpora.DocumentImpl;
 import gate.corpora.RepositioningInfo;
 
 /**
@@ -57,10 +56,12 @@ public class StandAloneAnnie  {
     
     
     // load the ANNIE application from the saved state in plugins/ANNIE
-    File gateHome = Gate.gateHome;
-    File pluginsHome = Gate.getPluginsHome();
-    File anniePlugin = new File(pluginsHome, "ANNIE");
-    File annieGapp = new File(anniePlugin, "ANNIE_with_defaults.gapp");
+//    File pluginsHome = Gate.getPluginsHome();
+//    File anniePlugin = new File(pluginsHome, "ANNIE");
+//    File annieGapp = new File(anniePlugin, "ANNIE_with_defaults.gapp");
+
+    File annieGapp = new File(System.getProperty("user.dir"), "asdf.xgapp");
+    
     annieController = (CorpusController) PersistenceManager.loadObjectFromFile(annieGapp);
 
     Out.prln("...ANNIE loaded");
@@ -109,8 +110,6 @@ public class StandAloneAnnie  {
     params.put("collectRepositioningInfo", new Boolean(true));
     Document initialDoc = (Document) Factory.createResource("gate.corpora.DocumentImpl", params);
     
-    
-    
     corpus.add(initialDoc); 
     
     // tell the pipeline about the corpus and run it
@@ -120,7 +119,7 @@ public class StandAloneAnnie  {
     // for each document, get an XML document with the
     // person and location names added
     Iterator<Document> iter = corpus.iterator();
-    int count = 0;
+  //  int count = 0;
     String startTagPart_1 = "<span GateID=\"";
     String startTagPart_2 = "\" title=\"";
     String startTagPart_3 = "\" style=\"background:Red;\">";
@@ -130,22 +129,22 @@ public class StandAloneAnnie  {
       Document doc = (Document) iter.next();
       AnnotationSet defaultAnnotSet = doc.getAnnotations();
       Set<String> annotTypesRequired = new HashSet<String>();
-      annotTypesRequired.add("Person");
-      annotTypesRequired.add("Location");
-      Set<Annotation> peopleAndPlaces = new HashSet<Annotation>(defaultAnnotSet.get(annotTypesRequired));
+      annotTypesRequired.add("AmountNumber");
+//      annotTypesRequired.add("Location");
+      Set<Annotation> measuresAndIngredients = new HashSet<Annotation>(defaultAnnotSet.get(annotTypesRequired));
 
       FeatureMap features = doc.getFeatures();
       String originalContent = (String) features.get(GateConstants.ORIGINAL_DOCUMENT_CONTENT_FEATURE_NAME);
       RepositioningInfo info = (RepositioningInfo) features.get(GateConstants.DOCUMENT_REPOSITIONING_INFO_FEATURE_NAME);
 
-      ++count;
+//      ++count;
 //      File file = new File("StANNIE_" + count + ".HTML");
 //      Out.prln("File name: '"+file.getAbsolutePath()+"'");
      
       if(originalContent != null && info != null) {
         Out.prln("OrigContent and reposInfo existing. Generate file...");
 
-        Iterator it = peopleAndPlaces.iterator();
+        Iterator<Annotation> it = measuresAndIngredients.iterator();
         Annotation currAnnot;
         SortedAnnotationList sortedAnnotations = new SortedAnnotationList();
 
@@ -159,7 +158,7 @@ public class StandAloneAnnie  {
         long insertPositionEnd;
         long insertPositionStart;
         // insert anotation tags backward
-        Out.prln("Unsorted annotations count: "+peopleAndPlaces.size());
+        Out.prln("Unsorted annotations count: "+measuresAndIngredients.size());
         Out.prln("Sorted annotations count: "+sortedAnnotations.size());
         for(int i=sortedAnnotations.size()-1; i>=0; --i) {
           currAnnot = (Annotation) sortedAnnotations.get(i);
@@ -189,7 +188,7 @@ public class StandAloneAnnie  {
       else if (originalContent != null) {
         Out.prln("OrigContent existing. Generate file...");
 
-        Iterator it = peopleAndPlaces.iterator();
+        Iterator<Annotation> it = measuresAndIngredients.iterator();
         Annotation currAnnot;
         SortedAnnotationList sortedAnnotations = new SortedAnnotationList();
 
@@ -203,7 +202,7 @@ public class StandAloneAnnie  {
         long insertPositionEnd;
         long insertPositionStart;
         // insert anotation tags backward
-        Out.prln("Unsorted annotations count: "+peopleAndPlaces.size());
+        Out.prln("Unsorted annotations count: "+measuresAndIngredients.size());
         Out.prln("Sorted annotations count: "+sortedAnnotations.size());
         for(int i=sortedAnnotations.size()-1; i>=0; --i) {
           currAnnot = (Annotation) sortedAnnotations.get(i);

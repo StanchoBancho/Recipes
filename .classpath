@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="/Applications/gate-7.1-build4485-BIN/bin/gate.jar" sourcepath="/Applications/gate-7.1-build4485-BIN/src/gate">
+	<classpathentry kind="lib" path="/Applications/gate-7.1-build4485-BIN/bin/gate.jar" sourcepath="/Applications/gate-7.1-build4485-BIN/src/">
 		<attributes>
 			<attribute name="javadoc_location" value="file:/Applications/gate-7.1-build4485-BIN/doc/javadoc/"/>
 		</attributes>

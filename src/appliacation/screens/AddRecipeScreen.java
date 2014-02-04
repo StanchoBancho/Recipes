@@ -21,6 +21,7 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JButton;
 import javax.swing.JMenuBar;
+import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 
 import org.apache.commons.io.FilenameUtils;
@@ -85,8 +86,12 @@ public class AddRecipeScreen extends JFrame {
 		contentPane.add(lblNewRecipeText, "2, 2, 4, 1, center, default");
 		
 		textPane = new JTextPane();
+		textPane.setToolTipText("Enter Recipe Here");
 		textPane.setContentType("text/html");
-		contentPane.add(textPane, "2, 4, 4, 7, fill, fill");
+		
+		JScrollPane jsp = new JScrollPane(textPane);
+
+		contentPane.add(jsp, "2, 4, 4, 7, fill, fill");
 		
 		btnAddRecipe = new JButton("Text Process");
 		btnAddRecipe.addActionListener(new ActionListener() {
@@ -155,8 +160,17 @@ public class AddRecipeScreen extends JFrame {
 		        //do something
 		    } finally {
 		        try {
-		            if(stream!=null) stream.close();
+		        	recipeText = "";
+		        	parsedText = "";
+		        	textPane.setText("");
+		        	textPane.setEditable(true);
+					btnAddRecipe.setText("Text Process");
+					btnSaveRecipe.setEnabled(false);
+					isRecipeProcessed = false;
+		        	if(stream!=null) stream.close();
 		            if(out!=null) out.close();
+		            
+		            
 		        } catch (Exception ex) {
 		            //do something
 		        }
