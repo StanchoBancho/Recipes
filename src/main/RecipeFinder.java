@@ -19,6 +19,7 @@ import appliacation.screens.*;
 public class RecipeFinder {
 	private AddRecipeScreen addRecipeScreen;
 	private SearchScreen searchRecipeScreen;
+	private BrowseRecipesScreen browseRecipeScreen;
 	private JMenuBar menuBar;
 	private GateManager shareGateManager;
 	// TO:DO:
@@ -74,16 +75,33 @@ public class RecipeFinder {
 						e1.printStackTrace();
 					}
 				}
-
 				else {
 					searchRecipeScreen.setVisible(true);
 				}
-
 			}
 		});
 		fileMenu.add(searchRecipesMenuItem);
 
 		JMenuItem browseRecipesMenuItem = new JMenuItem("Browse Recipes");
+		browseRecipesMenuItem.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				if (browseRecipeScreen == null) {
+					try {
+						browseRecipeScreen = new BrowseRecipesScreen();
+						browseRecipeScreen.setVisible(true);
+						//
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+				}
+				else {
+					browseRecipeScreen.setVisible(true);
+				}
+			}
+		});
+		
 		fileMenu.add(browseRecipesMenuItem);
 	}
 
@@ -102,24 +120,26 @@ public class RecipeFinder {
 					recipeFinder.searchRecipeScreen = new SearchScreen();
 					recipeFinder.searchRecipeScreen.setVisible(true);
 					recipeFinder.searchRecipeScreen.setTitle("Search");
-					// recipeFinder.searchRecipeScreen.delegate = recipeFinder;
 
 					AddRecipeScreen addRecipeScreen = new AddRecipeScreen(); 
 					addRecipeScreen.setVisible(true);
 					addRecipeScreen.setGateManager(recipeFinder.getShareGateManager());
 					recipeFinder.addRecipeScreen = addRecipeScreen;
 					
-					// recipeFinder.addRecipeScreen.delegate = recipeFinder;
+					BrowseRecipesScreen browseRecipeScreen = new BrowseRecipesScreen();
+					browseRecipeScreen.setVisible(true);
+					recipeFinder.browseRecipeScreen = browseRecipeScreen;
 
 					final WindowListener listener = new WindowAdapter() {
 						@Override
 						public void windowActivated(WindowEvent e) {
-							((JFrame) e.getWindow())
-									.setJMenuBar(recipeFinder.menuBar);
+							((JFrame) e.getWindow()).setJMenuBar(recipeFinder.menuBar);
 						}
 					};
 					recipeFinder.searchRecipeScreen.addWindowListener(listener);
 					recipeFinder.addRecipeScreen.addWindowListener(listener);
+					recipeFinder.browseRecipeScreen.addWindowListener(listener);
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}

@@ -61,8 +61,7 @@ public class StandAloneAnnie  {
     File pluginsHome = Gate.getPluginsHome();
     File anniePlugin = new File(pluginsHome, "ANNIE");
     File annieGapp = new File(anniePlugin, "ANNIE_with_defaults.gapp");
-    annieController =
-      (CorpusController) PersistenceManager.loadObjectFromFile(annieGapp);
+    annieController = (CorpusController) PersistenceManager.loadObjectFromFile(annieGapp);
 
     Out.prln("...ANNIE loaded");
   } // initAnnie()

@@ -20,6 +20,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JButton;
+import javax.swing.JMenuBar;
 import javax.swing.JTextPane;
 
 import org.apache.commons.io.FilenameUtils;
@@ -38,6 +39,7 @@ public class AddRecipeScreen extends JFrame {
 	private boolean isRecipeProcessed;
 	private String recipeText;
 	private String parsedText;
+	public  JMenuBar menuBar;
 
 	public GateManager getGateManager() {
 		return gateManager;

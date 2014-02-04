@@ -22,13 +22,10 @@ import gate.Exercise3;
 
 public class ResultScreen extends JFrame {
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
 	private DefaultListModel<String> listModel;
-	public static JMenuBar menuBar;
+	public JMenuBar menuBar;
 
 	/**
 	 * Create the frame.

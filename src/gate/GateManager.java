@@ -23,7 +23,6 @@ public class GateManager {
 	    	try {
 				result = annie.processText(recipe);
 			} catch (GateException | IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 	    	if(result != null){

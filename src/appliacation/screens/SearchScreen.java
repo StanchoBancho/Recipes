@@ -202,20 +202,20 @@ public class SearchScreen extends JFrame {
 				FormFactory.RELATED_GAP_ROWSPEC,}));
 		
 		
-		menuBar = new JMenuBar();
-        JMenu fileMenu = new JMenu("File");
-        menuBar.add(fileMenu);
-
-        mntmNewMenuItem = new JMenuItem("Add New Recipe");
-        fileMenu.add(mntmNewMenuItem);
-        
-        mntmNewMenuItem_1 = new JMenuItem("Search");
-        fileMenu.add(mntmNewMenuItem_1);
-        
-        mntmNewMenuItem_2 = new JMenuItem("Browse Recipes");
-        fileMenu.add(mntmNewMenuItem_2);
-        
-        setJMenuBar(menuBar);
+//		menuBar = new JMenuBar();
+//        JMenu fileMenu = new JMenu("File");
+//        menuBar.add(fileMenu);
+//
+//        mntmNewMenuItem = new JMenuItem("Add New Recipe");
+//        fileMenu.add(mntmNewMenuItem);
+//        
+//        mntmNewMenuItem_1 = new JMenuItem("Search");
+//        fileMenu.add(mntmNewMenuItem_1);
+//        
+//        mntmNewMenuItem_2 = new JMenuItem("Browse Recipes");
+//        fileMenu.add(mntmNewMenuItem_2);
+//        
+//        setJMenuBar(menuBar);
         
         
 		setupTextField();
