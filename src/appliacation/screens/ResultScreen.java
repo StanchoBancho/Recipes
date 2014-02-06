@@ -26,6 +26,7 @@ public class ResultScreen extends JFrame {
 	private JPanel contentPane;
 	private DefaultListModel<String> listModel;
 	public JMenuBar menuBar;
+    
 
 	/**
 	 * Create the frame.
@@ -76,5 +77,7 @@ public class ResultScreen extends JFrame {
 			listModel.addElement(string);
 		}
 	}
+	
+	
 
 }

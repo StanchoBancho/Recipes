@@ -14,6 +14,7 @@ import com.jgoodies.forms.factories.FormFactory;
 
 import javax.swing.JLabel;
 
+import java.awt.Dimension;
 import java.awt.Font;
 import java.io.File;
 import java.io.IOException;
@@ -28,7 +29,7 @@ import java.util.Collections;
 import javax.swing.JList;
 import javax.swing.JTextPane;
 
-public class BrowseRecipesScreen extends JFrame {
+public class BrowseRecipesScreen extends JFrame implements SaveRecipeListener{
 
 	/**
 	 * 
@@ -44,21 +45,22 @@ public class BrowseRecipesScreen extends JFrame {
 	 */
 	public BrowseRecipesScreen() {
 		setBounds(800, 0, 900, 800);
+		setMinimumSize(new Dimension(650, 650));
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
 		contentPane.setLayout(new FormLayout(new ColumnSpec[] {
-				FormFactory.DEFAULT_COLSPEC,
-				ColumnSpec.decode("max(186dlu;default):grow"),
-				ColumnSpec.decode("max(30dlu;default)"),
-				ColumnSpec.decode("max(208dlu;default):grow"),
-				FormFactory.DEFAULT_COLSPEC,},
+				ColumnSpec.decode("10dlu"),
+				ColumnSpec.decode("max(100dlu;default):grow"),
+				ColumnSpec.decode("max(20dlu;default)"),
+				ColumnSpec.decode("max(150dlu;default):grow"),
+				ColumnSpec.decode("10dlu"),},
 			new RowSpec[] {
 				RowSpec.decode("top:10dlu"),
 				FormFactory.DEFAULT_ROWSPEC,
-				FormFactory.DEFAULT_ROWSPEC,
-				RowSpec.decode("max(425dlu;default):grow"),
-				FormFactory.DEFAULT_ROWSPEC,}));
+				RowSpec.decode("10dlu"),
+				RowSpec.decode("max(300dlu;default):grow"),
+				RowSpec.decode("10dlu"),}));
 		
 		JLabel lblRecipeslistlabel = new JLabel("Recipes List");
 		lblRecipeslistlabel.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
@@ -130,6 +132,11 @@ public class BrowseRecipesScreen extends JFrame {
 			}
 			}
 		}
+	}
+
+	@Override
+	public void newRecipeSaved() {
+		populateRecipeList();		
 	}
 	
 }

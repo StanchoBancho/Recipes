@@ -5,8 +5,6 @@ package appliacation.screens;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JButton;
@@ -32,8 +30,6 @@ import javax.swing.event.ListSelectionListener;
 
 import java.awt.Font;
 
-import javax.swing.JMenuItem;
-
 public class SearchScreen extends JFrame {
 
 	/**
@@ -51,11 +47,6 @@ public class SearchScreen extends JFrame {
 	private JButton btnSearchForRecipes;
 	private JButton btnEditIngredient;
 	private JButton btnDeleteIngredient;
-	
-	public  JMenuBar menuBar;
-	private JMenuItem mntmNewMenuItem;
-	private JMenuItem mntmNewMenuItem_1;
-	private JMenuItem mntmNewMenuItem_2;
 
 	
 	private void setupTextField(){
@@ -250,17 +241,5 @@ public class SearchScreen extends JFrame {
 		lblIngredientList = new JLabel("Ingredient List");
 		lblIngredientList.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		contentPane.add(lblIngredientList, "2, 4, center, default");
-
-		
-//		try {
-//			String[] params = {"file:docs/Untitled.txt"};//, "file:docs/eu_slap.txt", "file:docs/eu_zone.txt"};
-//			StandAloneAnnie.doTest(params);
-//		} catch (GateException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		} catch (IOException e1) {
-//			// TODO Auto-generated catch block
-//			e1.printStackTrace();
-//		}
 	}
 }

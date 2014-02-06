@@ -22,8 +22,6 @@ public class RecipeFinder {
 	private BrowseRecipesScreen browseRecipeScreen;
 	private JMenuBar menuBar;
 	private GateManager shareGateManager;
-	// TO:DO:
-	// static private boolean PreviewRecipesScreen;
 
 	public GateManager getShareGateManager() {
 		return shareGateManager;
@@ -117,29 +115,36 @@ public class RecipeFinder {
 				try {
 					final RecipeFinder recipeFinder = new RecipeFinder();
 
-					recipeFinder.searchRecipeScreen = new SearchScreen();
-					recipeFinder.searchRecipeScreen.setVisible(true);
-					recipeFinder.searchRecipeScreen.setTitle("Search");
+					SearchScreen searchScreen= new SearchScreen();
+					searchScreen.setTitle("Search");
+					recipeFinder.searchRecipeScreen = searchScreen;
 
 					AddRecipeScreen addRecipeScreen = new AddRecipeScreen(); 
-					addRecipeScreen.setVisible(true);
 					addRecipeScreen.setGateManager(recipeFinder.getShareGateManager());
 					recipeFinder.addRecipeScreen = addRecipeScreen;
 					
 					BrowseRecipesScreen browseRecipeScreen = new BrowseRecipesScreen();
-					browseRecipeScreen.setVisible(true);
 					recipeFinder.browseRecipeScreen = browseRecipeScreen;
-
+					
+					addRecipeScreen.addSaveRecipeListener(browseRecipeScreen);
+					
+					
 					final WindowListener listener = new WindowAdapter() {
 						@Override
 						public void windowActivated(WindowEvent e) {
 							((JFrame) e.getWindow()).setJMenuBar(recipeFinder.menuBar);
 						}
 					};
-					recipeFinder.searchRecipeScreen.addWindowListener(listener);
-					recipeFinder.addRecipeScreen.addWindowListener(listener);
-					recipeFinder.browseRecipeScreen.addWindowListener(listener);
+					searchScreen.addWindowListener(listener);
+					addRecipeScreen.addWindowListener(listener);
+					browseRecipeScreen.addWindowListener(listener);
 
+					searchScreen.setVisible(true);
+					addRecipeScreen.setVisible(true);
+					browseRecipeScreen.setVisible(true);
+
+					
+					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
