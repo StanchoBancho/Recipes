@@ -27,6 +27,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 
 import org.apache.commons.io.FilenameUtils;
+import java.awt.Color;
 
 public class AddRecipeScreen extends JFrame {
 
@@ -45,6 +46,10 @@ public class AddRecipeScreen extends JFrame {
 	private String parsedText;
 	public JMenuBar menuBar;
 	private ArrayList<SaveRecipeListener> listeners = new ArrayList<SaveRecipeListener>();
+	private JLabel lblLegend;
+	private JLabel lblAmount;
+	private JLabel lblIngredient;
+	private JLabel lblMeasure;
 
 	public GateManager getGateManager() {
 		return gateManager;
@@ -59,7 +64,7 @@ public class AddRecipeScreen extends JFrame {
 	 */
 	public AddRecipeScreen() {
 		isRecipeProcessed = false;
-		setBounds(0, 0, 700, 500);
+		setBounds(0, 0, 700, 700);
 		setMinimumSize(new Dimension(550, 450));
 
 		contentPane = new JPanel();
@@ -68,18 +73,28 @@ public class AddRecipeScreen extends JFrame {
 		contentPane.setLayout(new FormLayout(new ColumnSpec[] {
 				FormFactory.LABEL_COMPONENT_GAP_COLSPEC,
 				ColumnSpec.decode("max(120dlu;default):grow"),
-				FormFactory.DEFAULT_COLSPEC,
+				ColumnSpec.decode("default:grow"),
 				ColumnSpec.decode("max(120dlu;min):grow"),
 				FormFactory.RELATED_GAP_COLSPEC,},
 			new RowSpec[] {
 				RowSpec.decode("10dlu"),
 				FormFactory.DEFAULT_ROWSPEC,
 				RowSpec.decode("10dlu"),
-				RowSpec.decode("max(174dlu;default):grow"),
+				RowSpec.decode("max(140dlu;default):grow"),
 				RowSpec.decode("7dlu"),
 				FormFactory.RELATED_GAP_ROWSPEC,
 				RowSpec.decode("28px"),
-				RowSpec.decode("10dlu"),}));
+				RowSpec.decode("bottom:default"),
+				RowSpec.decode("bottom:3dlu"),
+				FormFactory.DEFAULT_ROWSPEC,
+				RowSpec.decode("bottom:3dlu"),
+				RowSpec.decode("bottom:default"),
+				RowSpec.decode("bottom:3dlu"),
+				RowSpec.decode("bottom:default"),
+				RowSpec.decode("bottom:3dlu"),
+				RowSpec.decode("bottom:default"),
+				RowSpec.decode("bottom:3dlu"),
+				RowSpec.decode("bottom:default"),}));
 
 		JLabel lblNewRecipeText = new JLabel("New Recipe Text");
 		contentPane.add(lblNewRecipeText, "2, 2, 3, 1, center, default");
@@ -122,6 +137,18 @@ public class AddRecipeScreen extends JFrame {
 
 		btnSaveRecipe = new JButton("Save Recipe");
 		contentPane.add(btnSaveRecipe, "4, 7");
+		
+		lblLegend = new JLabel("Legend:");
+		contentPane.add(lblLegend, "2, 10");
+		
+		lblAmount = new JLabel("Amount");
+		contentPane.add(lblAmount, "4, 12");
+		
+		lblIngredient = new JLabel("Ingredient");
+		contentPane.add(lblIngredient, "4, 14");
+		
+		lblMeasure = new JLabel("Measure");
+		contentPane.add(lblMeasure, "4, 16");
 		btnSaveRecipe.addActionListener(new ActionListener() {
 
 			@Override
