@@ -60,7 +60,7 @@ public class StandAloneAnnie  {
 //    File anniePlugin = new File(pluginsHome, "ANNIE");
 //    File annieGapp = new File(anniePlugin, "ANNIE_with_defaults.gapp");
 
-    File annieGapp = new File(System.getProperty("user.dir"), "asdf.xgapp");
+    File annieGapp = new File(System.getProperty("user.dir"), "gate-state.xgapp");
     
     annieController = (CorpusController) PersistenceManager.loadObjectFromFile(annieGapp);
 

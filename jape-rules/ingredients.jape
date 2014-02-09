@@ -1,0 +1,47 @@
+Phase: TestNumber
+Input: Token Lookup TestStem
+Options: control = appelt
+
+Macro: FRACTIONAL_NUMBER
+({Token.string =~ "[0-9]{1,}"}
+ ({Token.string == "/"} | {Token.string == "."})
+ {Token.string =~ "[0-9]{1,}"}
+)
+
+Macro: NUMBER1
+({Token.string =~ "[0-9]{1,}"}
+)
+
+Rule: AmountNumber1
+Priority: 25
+(
+ (
+  (NUMBER1)
+  (FRACTIONAL_NUMBER)
+ )|
+ (NUMBER1)|
+ (FRACTIONAL_NUMBER)
+):amountNumber
+-->
+:amountNumber.AmountNumber = {kind = amountnumber}
+
+Macro: MEASURE_TYPE
+(
+ {Lookup.majorType == measure}
+)
+
+Rule: Ingredient1
+Priority: 20
+(
+ ({Token.category == JJ} | {Token.category == VBN} | {Token.category == VBD})*
+ {Lookup.majorType == ingredient}
+ ({Token.string == ","})*
+ ({Token.category == JJ} | {Token.category == VBN} | {Token.category == VBD})*
+):ingredient
+-->
+:ingredient.Ingredient = {kind = ingredient}
+
+Rule: Measure1
+(MEASURE_TYPE):measureType
+-->
+:measureType.Measure = {kind = measure}
