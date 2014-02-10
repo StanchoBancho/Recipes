@@ -29,6 +29,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import java.awt.Font;
+import java.util.ArrayList;
+import java.util.Collections;
 
 public class SearchScreen extends JFrame {
 
@@ -47,6 +49,7 @@ public class SearchScreen extends JFrame {
 	private JButton btnSearchForRecipes;
 	private JButton btnEditIngredient;
 	private JButton btnDeleteIngredient;
+	private ArrayList<RecipeSeekerListener> listeners = new ArrayList<RecipeSeekerListener>();
 
 	
 	private void setupTextField(){
@@ -144,13 +147,7 @@ public class SearchScreen extends JFrame {
 				// TODO Auto-generated method stub
 				int[] select = {};
 				list.setSelectedIndices(select);
-				
-				try {
-					ResultScreen frame = new ResultScreen();
-					frame.setVisible(true);
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
+				notifyListenersForSaveOperation();
 			}
 		});
 		
@@ -242,4 +239,19 @@ public class SearchScreen extends JFrame {
 		lblIngredientList.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		contentPane.add(lblIngredientList, "2, 4, center, default");
 	}
+	
+	private void notifyListenersForSaveOperation() {
+		for (RecipeSeekerListener listenerInstance : listeners) {
+			ArrayList<String> ingredients = Collections.list(listModel.elements());
+			listenerInstance.searchRecipesWithIngredients(ingredients);
+		}
+	}
+
+	public void addSaveRecipeListener(RecipeSeekerListener newListener) {
+		listeners.add(newListener);
+	}
+
+	public void removeSaveRecipeListener(RecipeSeekerListener listener) {
+		listeners.remove(listener);
+	}	
 }

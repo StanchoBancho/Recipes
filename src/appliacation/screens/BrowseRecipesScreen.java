@@ -36,8 +36,8 @@ public class BrowseRecipesScreen extends JFrame implements SaveRecipeListener{
 	 */
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JList<String> list;
-	private DefaultListModel<String> recipesListModel;
+	protected JList<String> list;
+	protected DefaultListModel<String> recipesListModel;
 	private JTextPane textPane;
 
 	/**
@@ -83,8 +83,6 @@ public class BrowseRecipesScreen extends JFrame implements SaveRecipeListener{
 		textPane = new JTextPane();
 		textPane.setContentType("text/html");		
 		contentPane.add(textPane, "4, 4, fill, fill");
-		
-		populateRecipeList();
 	}
 	
 	
@@ -108,6 +106,7 @@ public class BrowseRecipesScreen extends JFrame implements SaveRecipeListener{
 	
 	static String readFile(String path, Charset encoding) throws IOException 
 	{
+		
 		byte[] encoded = Files.readAllBytes(Paths.get(path));
 		 return encoding.decode(ByteBuffer.wrap(encoded)).toString();
 	}

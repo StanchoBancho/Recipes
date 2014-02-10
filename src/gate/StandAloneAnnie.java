@@ -22,6 +22,9 @@ import java.util.*;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.net.URLDecoder;
+
+import org.apache.commons.io.FilenameUtils;
 
 import gate.util.*;
 import gate.util.persistence.PersistenceManager;
@@ -62,7 +65,6 @@ public class StandAloneAnnie {
 
 		File annieGapp = new File(System.getProperty("user.dir"), "gate-state.xgapp");
 		annieController = (CorpusController) PersistenceManager.loadObjectFromFile(annieGapp);
-		Gate.init();
 		
 		Out.prln("...ANNIE loaded");
 	} // initAnnie()
@@ -81,7 +83,7 @@ public class StandAloneAnnie {
 
 	
 	
-	public ArrayList<Pair> getAllRecipesWihtIngredients() throws GateException, MalformedURLException
+	public ArrayList<Pair> getAllRecipesWihtIngredients() throws GateException, MalformedURLException, UnsupportedEncodingException
 	{
 		//add all recipes we have to new corpus
 		Corpus corpus = Factory.newCorpus("Corpus with all existing recipes");
@@ -89,7 +91,7 @@ public class StandAloneAnnie {
 		File folder = new File(System.getProperty("user.dir"), "recipes-list"); 
 		File[] listOfFiles = folder.listFiles();
 		for(int i = 0; i < listOfFiles.length; i++) {
-	      URL u = new URL(new String("recipes-list/" + listOfFiles[i].getName()));
+	      URL u = listOfFiles[i].toURI().toURL();
 	      FeatureMap params = Factory.newFeatureMap();
 	      params.put("sourceUrl", u);
 	      params.put("preserveOriginalContent", new Boolean(true));
@@ -105,20 +107,28 @@ public class StandAloneAnnie {
 		execute();
 		ArrayList<Pair> result = new ArrayList<Pair>();
 	    Iterator<Document> iter = corpus.iterator();
+	  
 	    while(iter.hasNext()) {
 	        Document doc = (Document) iter.next();
-	        String docPath = doc.getSourceUrl().toString();
+	        
+	        String decodedDocPath = FilenameUtils.getName(doc.getSourceUrl().toString());	        
+	        String docPath = URLDecoder.decode(decodedDocPath, "UTF-8");
 	        AnnotationSet defaultAnnotSet = doc.getAnnotations();
-	        Set<String> annotTypesRequired = new HashSet<String>(1);
+	        Set<String> annotTypesRequired = new HashSet<String>();
 	        annotTypesRequired.add("Ingredient");
+	        
 	        Set<Annotation> annotations = new HashSet<Annotation>(defaultAnnotSet.get(annotTypesRequired));
+	        
+	        
 	        FeatureMap features = doc.getFeatures();
 	        String originalContent = (String) features.get(GateConstants.ORIGINAL_DOCUMENT_CONTENT_FEATURE_NAME);
 	        if(originalContent != null){
 	        	Iterator<Annotation> it = annotations.iterator();
 	            while(it.hasNext()) {
 	            	Annotation currAnnot = (Annotation) it.next();
-	            	Pair p = new Pair(currAnnot, docPath);
+	            	FeatureMap f = currAnnot.getFeatures();
+	            	String ingredientName = (String) f.get("ingredientName");
+	            	Pair p = new Pair(ingredientName, docPath);
 	            	result.add(p);
 	            } 
 	        }
@@ -295,7 +305,12 @@ public class StandAloneAnnie {
 	/**
    *
    */
-	public static class SortedAnnotationList extends Vector {
+	public static class SortedAnnotationList extends Vector<Annotation> {
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
 		public SortedAnnotationList() {
 			super();
 		} // SortedAnnotationList

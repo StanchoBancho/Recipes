@@ -30,18 +30,24 @@ Macro: MEASURE_TYPE
  {Lookup.majorType == measure}
 )
 
+Macro: ADJECTIVE
+(
+ ({Token.category == JJ} | {Token.category == VBN} | {Token.category == VBD})
+)
+
 Rule: Ingredient1
 Priority: 20
 (
- ({Token.category == JJ} | {Token.category == VBN} | {Token.category == VBD})*
- {Lookup.majorType == ingredient}
+ (ADJECTIVE)*
+ ({Lookup.majorType == ingredient} | {Token.category == NN, !Lookup}):ingredientName
  ({Token.string == ","})*
- ({Token.category == JJ} | {Token.category == VBN} | {Token.category == VBD})*
+ (ADJECTIVE)*
 ):ingredient
 -->
-:ingredient.Ingredient = {kind = ingredient}
+:ingredient.Ingredient = {kind = ingredient, ingredientName = :ingredientName.Token@string, ingredientName = :ingredientName.Lookup@string, ingredientType = :ingredientName.Lookup@minorType}
 
 Rule: Measure1
+Priority: 28
 (MEASURE_TYPE):measureType
 -->
 :measureType.Measure = {kind = measure}

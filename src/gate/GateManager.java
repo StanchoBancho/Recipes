@@ -15,7 +15,7 @@ public class GateManager {
 		annie = new StandAloneAnnie(); 
 	    try {
 			annie.initAnnie();
-			//annotationsToDocuments = annie.getAllRecipesWihtIngredients();
+			annotationsToDocuments = annie.getAllRecipesWihtIngredients();
 		} catch (GateException | IOException e) {
 			e.printStackTrace();
 		}
@@ -40,11 +40,15 @@ public class GateManager {
 	{
 		ArrayList<String> result = new ArrayList<String>();
 		for(Pair p : annotationsToDocuments){
-			Annotation a = (Annotation) p.second;
-			FeatureMap featureMap = a.getFeatures();
-			
+			for(String desiredIngredient : ingredients){
+				if(p.first.equals(desiredIngredient)){
+					if(!result.contains((String)p.second)){
+						result.add((String)p.second);
+						break;
+					}
+				}
+			}
 		}
-		return null;
+		return result;
 	}
-	
 }

@@ -16,9 +16,6 @@ import javax.swing.JList;
 import javax.swing.JTextArea;
 
 import java.awt.Font;
-import java.util.ArrayList;
-
-import gate.Exercise3;
 
 public class ResultScreen extends JFrame {
 
@@ -70,14 +67,5 @@ public class ResultScreen extends JFrame {
 		
 		JTextArea textArea = new JTextArea();
 		contentPane.add(textArea, "4, 4, 7, 2, fill, fill");
-		
-		
-		ArrayList<String> result = Exercise3.getCorpus();
-		for (String string : result) {
-			listModel.addElement(string);
-		}
 	}
-	
-	
-
 }

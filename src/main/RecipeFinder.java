@@ -20,6 +20,7 @@ public class RecipeFinder {
 	private AddRecipeScreen addRecipeScreen;
 	private SearchScreen searchRecipeScreen;
 	private BrowseRecipesScreen browseRecipeScreen;
+	private BrowseSearchedRecipesScreen browseSearchedRecipeScreen;
 	private JMenuBar menuBar;
 	private GateManager shareGateManager;
 
@@ -115,20 +116,27 @@ public class RecipeFinder {
 				try {
 					final RecipeFinder recipeFinder = new RecipeFinder();
 
+					//setup search screens
 					SearchScreen searchScreen= new SearchScreen();
 					searchScreen.setTitle("Search");
 					recipeFinder.searchRecipeScreen = searchScreen;
 
-					AddRecipeScreen addRecipeScreen = new AddRecipeScreen(); 
-					addRecipeScreen.setGateManager(recipeFinder.getShareGateManager());
-					recipeFinder.addRecipeScreen = addRecipeScreen;
+					BrowseSearchedRecipesScreen browseSeachedRecipesScreen = new BrowseSearchedRecipesScreen(null);
+					browseSeachedRecipesScreen.gateManager = recipeFinder.getShareGateManager();
+					recipeFinder.browseSearchedRecipeScreen = browseSeachedRecipesScreen;
+					searchScreen.addSaveRecipeListener(browseSeachedRecipesScreen);
 					
+					//setup add and browse recipe screens
 					BrowseRecipesScreen browseRecipeScreen = new BrowseRecipesScreen();
+					browseRecipeScreen.populateRecipeList();
 					recipeFinder.browseRecipeScreen = browseRecipeScreen;
 					
+					AddRecipeScreen addRecipeScreen = new AddRecipeScreen(); 
+					addRecipeScreen.setGateManager(recipeFinder.getShareGateManager());
 					addRecipeScreen.addSaveRecipeListener(browseRecipeScreen);
-					
-					
+					recipeFinder.addRecipeScreen = addRecipeScreen;
+
+					//add window listener to all the screens
 					final WindowListener listener = new WindowAdapter() {
 						@Override
 						public void windowActivated(WindowEvent e) {
@@ -138,13 +146,14 @@ public class RecipeFinder {
 					searchScreen.addWindowListener(listener);
 					addRecipeScreen.addWindowListener(listener);
 					browseRecipeScreen.addWindowListener(listener);
-
+					browseSeachedRecipesScreen.addWindowListener(listener);
+					
+					//make visible some screen
 					searchScreen.setVisible(true);
 					addRecipeScreen.setVisible(true);
 					browseRecipeScreen.setVisible(true);
+					browseSeachedRecipesScreen.setVisible(false);
 
-					
-					
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
