@@ -5,6 +5,8 @@ import gate.GateManager;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
@@ -12,6 +14,8 @@ import java.util.ArrayList;
 
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
+import javax.swing.event.DocumentEvent;
+import javax.swing.event.DocumentListener;
 
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -27,7 +31,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 
 import org.apache.commons.io.FilenameUtils;
-import java.awt.Color;
 
 public class AddRecipeScreen extends JFrame {
 
@@ -102,11 +105,34 @@ public class AddRecipeScreen extends JFrame {
 		textPane = new JTextPane();
 		textPane.setToolTipText("Enter Recipe Here");
 		textPane.setContentType("text/html");
-
+		textPane.getDocument().addDocumentListener(new DocumentListener() {
+			
+			@Override
+			public void removeUpdate(DocumentEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void insertUpdate(DocumentEvent e) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void changedUpdate(DocumentEvent e) {
+				recipeText = textPane.getText();
+					if(recipeText == null || recipeText.isEmpty()){
+						btnSaveRecipe.setEnabled(false);
+					}
+					else{
+						btnSaveRecipe.setEnabled(true);
+					}
+			}
+		});
+		
 		JScrollPane jsp = new JScrollPane(textPane);
-
 		contentPane.add(jsp, "2, 4, 3, 1, fill, fill");
-
 		btnAddRecipe = new JButton("Text Process");
 		btnAddRecipe.addActionListener(new ActionListener() {
 
@@ -114,21 +140,16 @@ public class AddRecipeScreen extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				if (isRecipeProcessed) {
 					btnAddRecipe.setText("Text Process");
-					btnSaveRecipe.setEnabled(false);
-
 					textPane.setText(recipeText);
 					textPane.setEditable(true);
 				} else {
-
 					btnAddRecipe.setText("Edit Recipe Text");
 					textPane.setEditable(false);
-
 					recipeText = textPane.getText();
 					parsedText = gateManager.processRecipe(recipeText);
 					if (parsedText != null) {
 						textPane.setText(parsedText);
 					}
-					btnSaveRecipe.setEnabled(true);
 				}
 				isRecipeProcessed = !isRecipeProcessed;
 			}
@@ -153,15 +174,19 @@ public class AddRecipeScreen extends JFrame {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String recipeText = textPane.getText();
-				initiateRecipeSavingProcess(recipeText);
+				if(recipeText != null && !recipeText.isEmpty()){
+					initiateRecipeSavingProcess(recipeText);
+				}
+				else{
+					//TO:DO present allert 
+					
+				}
 			}
 		});
 	}
 
 	private void initiateRecipeSavingProcess(String text) {
-		String recipeDirectory = new File(System.getProperty("user.dir"),
-				"recipes-list").toString();
+		String recipeDirectory = new File(System.getProperty("user.dir"), "recipes-list").toString();
 		JFileChooser chooser = new JFileChooser(recipeDirectory);
 
 		int returnVal = chooser.showSaveDialog(this);
@@ -170,29 +195,15 @@ public class AddRecipeScreen extends JFrame {
 			PrintStream out = null;
 			try {
 				File file = chooser.getSelectedFile();
-
-				if (FilenameUtils.getExtension(file.getName())
-						.equalsIgnoreCase("html")) {
+				if (FilenameUtils.getExtension(file.getName()).equalsIgnoreCase("txt")) {
 					// filename is OK as-is
 				} else {
-					file = new File(file.getParentFile(),
-							FilenameUtils.getBaseName(file.getName()) + ".html"); // ALTERNATIVELY:
-																					// remove
-																					// the
-																					// extension
-																					// (if
-																					// any)
-																					// and
-																					// replace
-																					// it
-																					// with
-																					// ".xml"
+					file = new File(file.getParentFile(), FilenameUtils.getBaseName(file.getName()) + ".txt"); 
+					// ALTERNATIVELY: remove the extension (if any) and replace it with ".xml"
 				}
-
 				stream = new FileOutputStream(file);
 				out = new PrintStream(stream);
 				out.print(text); // This will overwrite existing contents
-
 			} catch (Exception ex) {
 				// do something
 			} finally {
@@ -202,7 +213,6 @@ public class AddRecipeScreen extends JFrame {
 					textPane.setText("");
 					textPane.setEditable(true);
 					btnAddRecipe.setText("Text Process");
-					btnSaveRecipe.setEnabled(false);
 					isRecipeProcessed = false;
 					if (stream != null)
 						stream.close();
@@ -231,5 +241,4 @@ public class AddRecipeScreen extends JFrame {
 	public void removeSaveRecipeListener(SaveRecipeListener listener) {
 		listeners.remove(listener);
 	}
-
 }
