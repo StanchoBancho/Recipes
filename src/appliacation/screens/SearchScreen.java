@@ -31,7 +31,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import java.awt.Font;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 

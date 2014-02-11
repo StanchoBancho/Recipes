@@ -103,9 +103,12 @@ public class StandAloneAnnie {
 	        	Iterator<Annotation> it = annotations.iterator();
 	            while(it.hasNext()) {
 	            	Annotation currAnnot = (Annotation) it.next();
-	            	FeatureMap f = currAnnot.getFeatures();
-	            	String ingredientName = (String) f.get("ingredientName");
-	            	Pair p = new Pair(ingredientName, docPath);
+	            	
+//	            	FeatureMap f = currAnnot.getFeatures();
+//	            	String ingredientName = (String) f.get("ingredientName");
+//	            	Pair p = new Pair(ingredientName, docPath);
+	            	Pair p = new Pair(currAnnot, docPath);
+	            	
 	            	result.add(p);
 	            } 
 	        }
@@ -302,6 +305,8 @@ public class StandAloneAnnie {
 				} // if
 			} // for
 			editableContent.insert(0, "<html>");
+			editableContent.insert(0,"<font face=\"Lucida Grande\" size=\"15\">");
+			editableContent.append("</font>");
 			editableContent.append("</html>");
 			return editableContent.toString();
 
@@ -348,6 +353,8 @@ public class StandAloneAnnie {
 				} // if
 			} // for
 			editableContent.insert(0, "<html>");
+			editableContent.insert(0,"<font face=\"Lucida Grande\" size=\"15\">");
+			editableContent.append("</font>");
 			editableContent.append("</html>");
 			return editableContent.toString();
 			// FileWriter writer = new FileWriter(file);

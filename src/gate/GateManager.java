@@ -47,14 +47,16 @@ public class GateManager {
 		}
 	}
 	
-	public ArrayList<String> getRecipesPathsThatContains(ArrayList<String> ingredients)
+	public ArrayList<Pair> getRecipesPathsThatContains(ArrayList<String> ingredients)
 	{
-		ArrayList<String> result = new ArrayList<String>();
+		ArrayList<Pair> result = new ArrayList<Pair>();
 		for(Pair p : annotationsToDocuments){
 			for(String desiredIngredient : ingredients){
-				if(p.first.equals(desiredIngredient)){
+				FeatureMap f = ((Annotation)p.first).getFeatures();
+            	String ingredientName = (String) f.get("ingredientName");
+				if(ingredientName.equals(desiredIngredient)){
 					if(!result.contains((String)p.second)){
-						result.add((String)p.second);
+						result.add(new Pair((String)p.second, ((Annotation)p.first)));
 						break;
 					}
 				}

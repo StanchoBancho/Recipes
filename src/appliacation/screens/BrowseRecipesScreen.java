@@ -40,7 +40,7 @@ public class BrowseRecipesScreen extends JFrame implements SaveRecipeListener{
 	private JPanel contentPane;
 	protected JList<String> list;
 	protected DefaultListModel<String> recipesListModel;
-	private JTextPane textPane;
+	protected JTextPane textPane;
 
 	/**
 	 * Create the frame.
@@ -83,7 +83,6 @@ public class BrowseRecipesScreen extends JFrame implements SaveRecipeListener{
 		contentPane.add(list, "2, 4, fill, fill");
 		
 		textPane = new JTextPane();
-		//textPane.setContentType("text/html");
 		textPane.setEditable(false);
 		contentPane.add(textPane, "4, 4, fill, fill");
 	}
@@ -114,7 +113,7 @@ public class BrowseRecipesScreen extends JFrame implements SaveRecipeListener{
 		 return encoding.decode(ByteBuffer.wrap(encoded)).toString();
 	}
 	
-	private void presentSelectedRecipe(int recipeIndex){
+	protected void presentSelectedRecipe(int recipeIndex){
 		if(0 <= recipeIndex  && recipeIndex < recipesListModel.capacity()){
 			File folder = new File(System.getProperty("user.dir"), "recipes-list"); 
 			String fileName = recipesListModel.elementAt(recipeIndex);
