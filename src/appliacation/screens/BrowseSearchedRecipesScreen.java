@@ -1,7 +1,10 @@
 package appliacation.screens;
 
+import interfaces.RecipeSeekerListener;
+
 import java.util.ArrayList;
 import java.util.Collections;
+
 import gate.GateManager;
 public class BrowseSearchedRecipesScreen extends BrowseRecipesScreen implements RecipeSeekerListener {
 

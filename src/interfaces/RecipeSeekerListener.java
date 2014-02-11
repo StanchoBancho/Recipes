@@ -1,4 +1,4 @@
-package appliacation.screens;
+package interfaces;
 import java.util.ArrayList;
 
 public interface RecipeSeekerListener {

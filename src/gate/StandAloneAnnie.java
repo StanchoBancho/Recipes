@@ -29,6 +29,7 @@ import org.apache.commons.io.FilenameUtils;
 import gate.util.*;
 import gate.util.persistence.PersistenceManager;
 import gate.corpora.RepositioningInfo;
+import gate.creole.ResourceInstantiationException;
 
 /**
  * This class illustrates how to use ANNIE as a sausage machine in another
@@ -81,28 +82,7 @@ public class StandAloneAnnie {
 		Out.prln("...ANNIE complete");
 	} // execute()
 
-	
-	
-	public ArrayList<Pair> getAllRecipesWihtIngredients() throws GateException, MalformedURLException, UnsupportedEncodingException
-	{
-		//add all recipes we have to new corpus
-		Corpus corpus = Factory.newCorpus("Corpus with all existing recipes");
-	  
-		File folder = new File(System.getProperty("user.dir"), "recipes-list"); 
-		File[] listOfFiles = folder.listFiles();
-		for(int i = 0; i < listOfFiles.length; i++) {
-	      URL u = listOfFiles[i].toURI().toURL();
-	      FeatureMap params = Factory.newFeatureMap();
-	      params.put("sourceUrl", u);
-	      params.put("preserveOriginalContent", new Boolean(true));
-	      params.put("collectRepositioningInfo", new Boolean(true));
-	      Out.prln("Creating doc for " + u);
-	      Document doc = (Document)
-	        Factory.createResource("gate.corpora.DocumentImpl", params);
-	      corpus.add(doc);
-	    } 
-
-		// tell the pipeline about the corpus and run it
+	private ArrayList<Pair> getIngredientsAnnotationToTextFileFromCorpus(Corpus corpus) throws GateException, UnsupportedEncodingException{
 		setCorpus(corpus);
 		execute();
 		ArrayList<Pair> result = new ArrayList<Pair>();
@@ -116,10 +96,7 @@ public class StandAloneAnnie {
 	        AnnotationSet defaultAnnotSet = doc.getAnnotations();
 	        Set<String> annotTypesRequired = new HashSet<String>();
 	        annotTypesRequired.add("Ingredient");
-	        
-	        Set<Annotation> annotations = new HashSet<Annotation>(defaultAnnotSet.get(annotTypesRequired));
-	        
-	        
+	        Set<Annotation> annotations = new HashSet<Annotation>(defaultAnnotSet.get(annotTypesRequired));	        
 	        FeatureMap features = doc.getFeatures();
 	        String originalContent = (String) features.get(GateConstants.ORIGINAL_DOCUMENT_CONTENT_FEATURE_NAME);
 	        if(originalContent != null){
@@ -135,6 +112,94 @@ public class StandAloneAnnie {
 	    }
 		return result;
 	}
+	
+	public ArrayList<Pair> getIngredientsAnnotationToRecipePathsForRecipe(URL recipePath) {
+		Corpus corpus;
+		try {
+			corpus = Factory.newCorpus("Corpus with all existing recipes");
+		} catch (ResourceInstantiationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			return null;
+		}
+		 
+	      FeatureMap params = Factory.newFeatureMap();
+	      params.put("sourceUrl", recipePath);
+	      params.put("preserveOriginalContent", new Boolean(true));
+	      params.put("collectRepositioningInfo", new Boolean(true));
+	      Out.prln("Creating doc for " + recipePath);
+	      Document doc;
+		try {
+			doc = (Document)Factory.createResource("gate.corpora.DocumentImpl", params);
+		} catch (ResourceInstantiationException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			return null;
+		}
+	    corpus.add(doc);
+	     
+		
+	   ArrayList<Pair> result = null;
+		try {
+			result = getIngredientsAnnotationToTextFileFromCorpus(corpus);
+		} catch (UnsupportedEncodingException | GateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			result = null;
+		}
+		return result;
+	}
+	
+	public ArrayList<Pair> getAllRecipesWihtIngredients()
+	{
+		//add all recipes we have to new corpus
+		Corpus corpus;
+		try {
+			corpus = Factory.newCorpus("Corpus with all existing recipes");
+		} catch (ResourceInstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+	  
+		File folder = new File(System.getProperty("user.dir"), "recipes-list"); 
+		File[] listOfFiles = folder.listFiles();
+		for(int i = 0; i < listOfFiles.length; i++) {
+	      URL u;
+		try {
+			u = listOfFiles[i].toURI().toURL();
+		} catch (MalformedURLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+			continue;
+		}
+	      FeatureMap params = Factory.newFeatureMap();
+	      params.put("sourceUrl", u);
+	      params.put("preserveOriginalContent", new Boolean(true));
+	      params.put("collectRepositioningInfo", new Boolean(true));
+	      Out.prln("Creating doc for " + u);
+	      Document doc;
+		try {
+			doc = (Document)Factory.createResource("gate.corpora.DocumentImpl", params);
+		} catch (ResourceInstantiationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			continue;
+		}
+	      corpus.add(doc);
+	    } 
+
+		// tell the pipeline about the corpus and run it
+		ArrayList<Pair> result = null;
+		try {
+			result = getIngredientsAnnotationToTextFileFromCorpus(corpus);
+		} catch (UnsupportedEncodingException | GateException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			result = null;
+		}
+		return result;
+		}
 	
 	/**
 	 * Run from the command-line, with a list of URLs as argument.
@@ -206,7 +271,6 @@ public class StandAloneAnnie {
 			} // while
 
 			StringBuffer editableContent = new StringBuffer(originalContent);
-			editableContent.append("<html>");
 			long insertPositionEnd;
 			long insertPositionStart;
 			// insert anotation tags backward
@@ -237,7 +301,8 @@ public class StandAloneAnnie {
 					editableContent.insert((int) insertPositionStart, startTagPart_1);
 				} // if
 			} // for
-			editableContent.append("<html>");
+			editableContent.insert(0, "<html>");
+			editableContent.append("</html>");
 			return editableContent.toString();
 
 		} // if - should generate
@@ -254,7 +319,6 @@ public class StandAloneAnnie {
 			} // while
 
 			StringBuffer editableContent = new StringBuffer(originalContent);
-			editableContent.append("<html>");
 			long insertPositionEnd;
 			long insertPositionStart;
 			// insert anotation tags backward
@@ -283,7 +347,8 @@ public class StandAloneAnnie {
 					editableContent.insert((int) insertPositionStart, startTagPart_1);
 				} // if
 			} // for
-			editableContent.append("<html>");
+			editableContent.insert(0, "<html>");
+			editableContent.append("</html>");
 			return editableContent.toString();
 			// FileWriter writer = new FileWriter(file);
 			// writer.write(editableContent.toString());

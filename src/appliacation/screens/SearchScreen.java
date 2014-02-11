@@ -3,6 +3,8 @@ package appliacation.screens;
 //import gate.StandAloneAnnie;
 //import gate.util.GateException;
 
+import interfaces.RecipeSeekerListener;
+
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -29,10 +31,11 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import java.awt.Font;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class SearchScreen extends JFrame {
+public class SearchScreen extends JFrame{
 
 	/**
 	 * 
@@ -253,5 +256,7 @@ public class SearchScreen extends JFrame {
 
 	public void removeSaveRecipeListener(RecipeSeekerListener listener) {
 		listeners.remove(listener);
-	}	
+	}
+
+
 }

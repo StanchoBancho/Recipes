@@ -1,6 +1,9 @@
 package gate;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 
 import gate.util.GateException;
@@ -26,7 +29,8 @@ public class GateManager {
 		if(annie != null){
 	    	try {
 				result = annie.processText(recipe);
-			} catch (GateException | IOException e) {
+				result = result.replaceAll("(\r\n|\n)", "<br />");
+	    	} catch (GateException | IOException e) {
 				e.printStackTrace();
 			}
 	    	if(result != null){
@@ -34,6 +38,13 @@ public class GateManager {
 	    	}
 	    }
 		return null;
+	}
+	
+	public void updateSearchCorpusWithNewRecipe(URL newRecipePath) {
+		ArrayList<Pair> newAnnotationsToDocumentsPaths = annie.getIngredientsAnnotationToRecipePathsForRecipe(newRecipePath); 
+		if(newAnnotationsToDocumentsPaths != null){
+			annotationsToDocuments.addAll(newAnnotationsToDocumentsPaths);
+		}
 	}
 	
 	public ArrayList<String> getRecipesPathsThatContains(ArrayList<String> ingredients)
@@ -51,4 +62,9 @@ public class GateManager {
 		}
 		return result;
 	}
+	
+	public void updateAllRecipesWihtIngredients(){
+		
+	}
+	
 }

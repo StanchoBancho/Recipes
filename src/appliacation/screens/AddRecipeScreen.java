@@ -1,21 +1,23 @@
 package appliacation.screens;
 
 import gate.GateManager;
+import interfaces.SaveRecipeListener;
 
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintStream;
+import java.net.URL;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DefaultEditorKit;
 
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -41,7 +43,7 @@ public class AddRecipeScreen extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel contentPane;
-	private JButton btnAddRecipe;
+	private JButton btnProcessEditRecipe;
 	private JButton btnSaveRecipe;
 	private JTextPane textPane;
 	private boolean isRecipeProcessed;
@@ -78,18 +80,13 @@ public class AddRecipeScreen extends JFrame {
 				ColumnSpec.decode("max(120dlu;default):grow"),
 				ColumnSpec.decode("default:grow"),
 				ColumnSpec.decode("max(120dlu;min):grow"),
-				FormFactory.RELATED_GAP_COLSPEC,},
-			new RowSpec[] {
-				RowSpec.decode("10dlu"),
-				FormFactory.DEFAULT_ROWSPEC,
+				FormFactory.RELATED_GAP_COLSPEC, }, new RowSpec[] {
+				RowSpec.decode("10dlu"), FormFactory.DEFAULT_ROWSPEC,
 				RowSpec.decode("10dlu"),
 				RowSpec.decode("max(140dlu;default):grow"),
-				RowSpec.decode("7dlu"),
-				FormFactory.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("28px"),
-				RowSpec.decode("bottom:default"),
-				RowSpec.decode("bottom:3dlu"),
-				FormFactory.DEFAULT_ROWSPEC,
+				RowSpec.decode("7dlu"), FormFactory.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("28px"), RowSpec.decode("bottom:default"),
+				RowSpec.decode("bottom:3dlu"), FormFactory.DEFAULT_ROWSPEC,
 				RowSpec.decode("bottom:3dlu"),
 				RowSpec.decode("bottom:default"),
 				RowSpec.decode("bottom:3dlu"),
@@ -97,96 +94,102 @@ public class AddRecipeScreen extends JFrame {
 				RowSpec.decode("bottom:3dlu"),
 				RowSpec.decode("bottom:default"),
 				RowSpec.decode("bottom:3dlu"),
-				RowSpec.decode("bottom:default"),}));
+				RowSpec.decode("bottom:default"), }));
 
 		JLabel lblNewRecipeText = new JLabel("New Recipe Text");
 		contentPane.add(lblNewRecipeText, "2, 2, 3, 1, center, default");
 
 		textPane = new JTextPane();
 		textPane.setToolTipText("Enter Recipe Here");
-		textPane.setContentType("text/html");
 		textPane.getDocument().addDocumentListener(new DocumentListener() {
-			
+
+			private void checkEnteredTextState() {
+				recipeText = textPane.getText();
+				if (recipeText == null || recipeText.isEmpty()) {
+					btnSaveRecipe.setEnabled(false);
+				} else {
+					btnSaveRecipe.setEnabled(true);
+				}
+			}
+
 			@Override
 			public void removeUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
-				
+				checkEnteredTextState();
 			}
-			
+
 			@Override
 			public void insertUpdate(DocumentEvent e) {
-				// TODO Auto-generated method stub
-				
+				checkEnteredTextState();
 			}
-			
+
 			@Override
 			public void changedUpdate(DocumentEvent e) {
-				recipeText = textPane.getText();
-					if(recipeText == null || recipeText.isEmpty()){
-						btnSaveRecipe.setEnabled(false);
-					}
-					else{
-						btnSaveRecipe.setEnabled(true);
-					}
 			}
 		});
-		
+
 		JScrollPane jsp = new JScrollPane(textPane);
 		contentPane.add(jsp, "2, 4, 3, 1, fill, fill");
-		btnAddRecipe = new JButton("Text Process");
-		btnAddRecipe.addActionListener(new ActionListener() {
+		btnProcessEditRecipe = new JButton("Text Process");
+
+		btnProcessEditRecipe.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				if (isRecipeProcessed) {
-					btnAddRecipe.setText("Text Process");
+					btnProcessEditRecipe.setText("Text Process");
+					textPane.setContentType("text/plain");
 					textPane.setText(recipeText);
+					textPane.updateUI();
 					textPane.setEditable(true);
 				} else {
-					btnAddRecipe.setText("Edit Recipe Text");
+					btnProcessEditRecipe.setText("Edit Recipe Text");
 					textPane.setEditable(false);
-					recipeText = textPane.getText();
+
+					recipeText = new String(textPane.getText());
+
 					parsedText = gateManager.processRecipe(recipeText);
 					if (parsedText != null) {
+
+						textPane.setContentType("text/html");
 						textPane.setText(parsedText);
 					}
 				}
 				isRecipeProcessed = !isRecipeProcessed;
 			}
 		});
-		contentPane.add(btnAddRecipe, "2, 7");
+		contentPane.add(btnProcessEditRecipe, "2, 7");
 
 		btnSaveRecipe = new JButton("Save Recipe");
+		btnSaveRecipe.setEnabled(false);
 		contentPane.add(btnSaveRecipe, "4, 7");
-		
+
 		lblLegend = new JLabel("Legend:");
 		contentPane.add(lblLegend, "2, 10");
-		
+
 		lblAmount = new JLabel("Amount");
 		contentPane.add(lblAmount, "4, 12");
-		
+
 		lblIngredient = new JLabel("Ingredient");
 		contentPane.add(lblIngredient, "4, 14");
-		
+
 		lblMeasure = new JLabel("Measure");
 		contentPane.add(lblMeasure, "4, 16");
 		btnSaveRecipe.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if(recipeText != null && !recipeText.isEmpty()){
+				if (recipeText != null && !recipeText.isEmpty()) {
 					initiateRecipeSavingProcess(recipeText);
-				}
-				else{
-					//TO:DO present allert 
-					
+				} else {
+					// TO:DO present allert
 				}
 			}
 		});
 	}
 
 	private void initiateRecipeSavingProcess(String text) {
-		String recipeDirectory = new File(System.getProperty("user.dir"), "recipes-list").toString();
+		String recipeDirectory = new File(System.getProperty("user.dir"),
+				"recipes-list").toString();
 		JFileChooser chooser = new JFileChooser(recipeDirectory);
 
 		int returnVal = chooser.showSaveDialog(this);
@@ -195,25 +198,26 @@ public class AddRecipeScreen extends JFrame {
 			PrintStream out = null;
 			try {
 				File file = chooser.getSelectedFile();
-				if (FilenameUtils.getExtension(file.getName()).equalsIgnoreCase("txt")) {
+				if (FilenameUtils.getExtension(file.getName())
+						.equalsIgnoreCase("txt")) {
 					// filename is OK as-is
 				} else {
-					file = new File(file.getParentFile(), FilenameUtils.getBaseName(file.getName()) + ".txt"); 
-					// ALTERNATIVELY: remove the extension (if any) and replace it with ".xml"
+					file = new File(file.getParentFile(),
+							FilenameUtils.getBaseName(file.getName()) + ".txt");
+					// ALTERNATIVELY: remove the extension (if any) and replace
+					// it with ".xml"
 				}
 				stream = new FileOutputStream(file);
 				out = new PrintStream(stream);
 				out.print(text); // This will overwrite existing contents
+				URL url = file.toURI().toURL();
+				gateManager.updateSearchCorpusWithNewRecipe(url);
+				notifyListenersForSaveOperation();
 			} catch (Exception ex) {
 				// do something
 			} finally {
 				try {
-					recipeText = "";
-					parsedText = "";
-					textPane.setText("");
-					textPane.setEditable(true);
-					btnAddRecipe.setText("Text Process");
-					isRecipeProcessed = false;
+
 					if (stream != null)
 						stream.close();
 					if (out != null)
@@ -222,7 +226,13 @@ public class AddRecipeScreen extends JFrame {
 				} catch (Exception ex) {
 					// do something
 				} finally {
-					notifyListenersForSaveOperation();
+
+					recipeText = "";
+					parsedText = "";
+					textPane.setText("");
+					textPane.setEditable(true);
+					btnProcessEditRecipe.setText("Text Process");
+					isRecipeProcessed = false;
 				}
 			}
 		}

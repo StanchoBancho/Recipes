@@ -1,5 +1,7 @@
 package appliacation.screens;
 
+import interfaces.SaveRecipeListener;
+
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -81,7 +83,8 @@ public class BrowseRecipesScreen extends JFrame implements SaveRecipeListener{
 		contentPane.add(list, "2, 4, fill, fill");
 		
 		textPane = new JTextPane();
-		textPane.setContentType("text/html");		
+		//textPane.setContentType("text/html");
+		textPane.setEditable(false);
 		contentPane.add(textPane, "4, 4, fill, fill");
 	}
 	
@@ -137,5 +140,4 @@ public class BrowseRecipesScreen extends JFrame implements SaveRecipeListener{
 	public void newRecipeSaved() {
 		populateRecipeList();		
 	}
-	
 }
