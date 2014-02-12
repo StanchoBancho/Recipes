@@ -1,72 +1,66 @@
 package gate;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-
 import gate.util.GateException;
-import gate.util.Pair;
-;
+
 
 public class GateManager {
 	private StandAloneAnnie annie;
-	private ArrayList<Pair> annotationsToDocuments;
-	
-	public GateManager(){
-		annie = new StandAloneAnnie(); 
-	    try {
+	private ArrayList<Document> documents;
+
+	public GateManager() {
+		annie = new StandAloneAnnie();
+		try {
 			annie.initAnnie();
-			annotationsToDocuments = annie.getAllRecipesWihtIngredients();
+			documents = annie.getDocumentsWithIngredients();
 		} catch (GateException | IOException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	public String processRecipe(String recipe){
+
+	public String processRecipe(String recipe) {
 		String result = null;
-		if(annie != null){
-	    	try {
+		if (annie != null) {
+			try {
 				result = annie.processText(recipe);
-				result = result.replaceAll("(\r\n|\n)", "<br />");
-	    	} catch (GateException | IOException e) {
+			} catch (GateException | IOException e) {
 				e.printStackTrace();
 			}
-	    	if(result != null){
-	    		return result;
-	    	}
-	    }
+			if (result != null) {
+				return result;
+			}
+		}
 		return null;
 	}
-	
+
 	public void updateSearchCorpusWithNewRecipe(URL newRecipePath) {
-		ArrayList<Pair> newAnnotationsToDocumentsPaths = annie.getIngredientsAnnotationToRecipePathsForRecipe(newRecipePath); 
-		if(newAnnotationsToDocumentsPaths != null){
-			annotationsToDocuments.addAll(newAnnotationsToDocumentsPaths);
+		Document newAnnotationsToDocumentsPaths = annie.getDocumentWithIngredientForNewRecipe(newRecipePath);
+		if (newAnnotationsToDocumentsPaths != null && !documents.contains(newAnnotationsToDocumentsPaths)) {
+			documents.add(newAnnotationsToDocumentsPaths);
 		}
 	}
-	
-	public ArrayList<Pair> getRecipesPathsThatContains(ArrayList<String> ingredients)
-	{
-		ArrayList<Pair> result = new ArrayList<Pair>();
-		for(Pair p : annotationsToDocuments){
-			for(String desiredIngredient : ingredients){
-				FeatureMap f = ((Annotation)p.first).getFeatures();
-            	String ingredientName = (String) f.get("ingredientName");
-				if(ingredientName.equals(desiredIngredient)){
-					if(!result.contains((String)p.second)){
-						result.add(new Pair((String)p.second, ((Annotation)p.first)));
-						break;
+
+	public ArrayList<Document> getDocumentsThatContainsIngredients(ArrayList<String> ingredients) {
+		ArrayList<Document> result = new ArrayList<Document>();
+		for (Document p : documents) {
+			for (String desiredIngredient : ingredients) {
+				AnnotationSet documentAnnotations = p.getAnnotations();
+				for (Annotation a : documentAnnotations) {
+					FeatureMap f = a.getFeatures();
+					String ingredientName = (String) f.get("ingredientName");
+					if (ingredientName!= null && ingredientName.equals(desiredIngredient)) {
+						// pair (annotation, path)
+						if (!result.contains(p)) {
+							result.add(p);
+							break;
+						}
 					}
 				}
 			}
 		}
 		return result;
 	}
-	
-	public void updateAllRecipesWihtIngredients(){
-		
-	}
-	
+
 }

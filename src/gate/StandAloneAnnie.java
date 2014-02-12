@@ -59,11 +59,7 @@ public class StandAloneAnnie {
 			e.printStackTrace();
 		}
 
-		// load the ANNIE application from the saved state in plugins/ANNIE
-		// File pluginsHome = Gate.getPluginsHome();
-		// File anniePlugin = new File(pluginsHome, "ANNIE");
-		// File annieGapp = new File(anniePlugin, "ANNIE_with_defaults.gapp");
-
+		// load the ANNIE application from the saved state
 		File annieGapp = new File(System.getProperty("user.dir"), "gate-state.xgapp");
 		annieController = (CorpusController) PersistenceManager.loadObjectFromFile(annieGapp);
 		
@@ -82,41 +78,26 @@ public class StandAloneAnnie {
 		Out.prln("...ANNIE complete");
 	} // execute()
 
-	private ArrayList<Pair> getIngredientsAnnotationToTextFileFromCorpus(Corpus corpus) throws GateException, UnsupportedEncodingException{
+	private ArrayList<Document> getIngredientsAnnotationToTextFileFromCorpus(Corpus corpus) throws GateException, UnsupportedEncodingException{
 		setCorpus(corpus);
 		execute();
-		ArrayList<Pair> result = new ArrayList<Pair>();
+		ArrayList<Document> result = new ArrayList<Document>();
 	    Iterator<Document> iter = corpus.iterator();
 	  
 	    while(iter.hasNext()) {
 	        Document doc = (Document) iter.next();
-	        
-	        String decodedDocPath = FilenameUtils.getName(doc.getSourceUrl().toString());	        
-	        String docPath = URLDecoder.decode(decodedDocPath, "UTF-8");
 	        AnnotationSet defaultAnnotSet = doc.getAnnotations();
 	        Set<String> annotTypesRequired = new HashSet<String>();
 	        annotTypesRequired.add("Ingredient");
 	        Set<Annotation> annotations = new HashSet<Annotation>(defaultAnnotSet.get(annotTypesRequired));	        
-	        FeatureMap features = doc.getFeatures();
-	        String originalContent = (String) features.get(GateConstants.ORIGINAL_DOCUMENT_CONTENT_FEATURE_NAME);
-	        if(originalContent != null){
-	        	Iterator<Annotation> it = annotations.iterator();
-	            while(it.hasNext()) {
-	            	Annotation currAnnot = (Annotation) it.next();
-	            	
-//	            	FeatureMap f = currAnnot.getFeatures();
-//	            	String ingredientName = (String) f.get("ingredientName");
-//	            	Pair p = new Pair(ingredientName, docPath);
-	            	Pair p = new Pair(currAnnot, docPath);
-	            	
-	            	result.add(p);
-	            } 
+	        if(annotations.size() > 0){
+	        	result.add(doc);
 	        }
 	    }
 		return result;
 	}
 	
-	public ArrayList<Pair> getIngredientsAnnotationToRecipePathsForRecipe(URL recipePath) {
+	public Document getDocumentWithIngredientForNewRecipe(URL recipePath) {
 		Corpus corpus;
 		try {
 			corpus = Factory.newCorpus("Corpus with all existing recipes");
@@ -142,9 +123,12 @@ public class StandAloneAnnie {
 	    corpus.add(doc);
 	     
 		
-	   ArrayList<Pair> result = null;
+	   Document result = null;
 		try {
-			result = getIngredientsAnnotationToTextFileFromCorpus(corpus);
+			ArrayList<Document> documents = getIngredientsAnnotationToTextFileFromCorpus(corpus); 
+			if(documents.size() > 0){
+				result = documents.get(0);	
+			}
 		} catch (UnsupportedEncodingException | GateException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -153,7 +137,7 @@ public class StandAloneAnnie {
 		return result;
 	}
 	
-	public ArrayList<Pair> getAllRecipesWihtIngredients()
+	public ArrayList<Document> getDocumentsWithIngredients()
 	{
 		//add all recipes we have to new corpus
 		Corpus corpus;
@@ -193,7 +177,7 @@ public class StandAloneAnnie {
 	    } 
 
 		// tell the pipeline about the corpus and run it
-		ArrayList<Pair> result = null;
+		ArrayList<Document> result = null;
 		try {
 			result = getIngredientsAnnotationToTextFileFromCorpus(corpus);
 		} catch (UnsupportedEncodingException | GateException e) {
@@ -264,6 +248,7 @@ public class StandAloneAnnie {
 		if (originalContent != null && info != null) {
 
 			Out.prln("OrigContent and reposInfo existing. Generate file...");
+			
 			Iterator<Annotation> it = annotations.iterator();
 			Annotation currAnnot;
 			SortedAnnotationList sortedAnnotations = new SortedAnnotationList();
@@ -304,11 +289,13 @@ public class StandAloneAnnie {
 					editableContent.insert((int) insertPositionStart, startTagPart_1);
 				} // if
 			} // for
+			editableContent.insert(0,"<font face=\"Lucida Grande\" size=\"13\">");
 			editableContent.insert(0, "<html>");
-			editableContent.insert(0,"<font face=\"Lucida Grande\" size=\"15\">");
 			editableContent.append("</font>");
 			editableContent.append("</html>");
-			return editableContent.toString();
+			String result = editableContent.toString(); 
+			result = result.replaceAll("(\r\n|\n)", "<br />");
+			return result;
 
 		} // if - should generate
 		else if (originalContent != null) {
@@ -352,27 +339,20 @@ public class StandAloneAnnie {
 					editableContent.insert((int) insertPositionStart, startTagPart_1);
 				} // if
 			} // for
+			editableContent.insert(0,"<font face=\"Lucida Grande\" size=\"13\">");
 			editableContent.insert(0, "<html>");
-			editableContent.insert(0,"<font face=\"Lucida Grande\" size=\"15\">");
 			editableContent.append("</font>");
 			editableContent.append("</html>");
-			return editableContent.toString();
-			// FileWriter writer = new FileWriter(file);
-			// writer.write(editableContent.toString());
-			// writer.close();
+			String result = editableContent.toString(); 
+			result = result.replaceAll("(\r\n|\n)", "<br />");
+			return result;
 		} else {
 			Out.prln("Content : " + originalContent);
 			Out.prln("Repositioning: " + info);
 		}
 
-		// String xmlDocument = doc.toXml(peopleAndPlaces, false);
-		// String fileName = new String("StANNIE_toXML_" + count + ".HTML");
-		// FileWriter writer = new FileWriter(fileName);
-		// writer.write(xmlDocument);
-		// writer.close();
-
 		return null;
-	} // main
+	}
 
 	/**
    *
