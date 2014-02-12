@@ -5,6 +5,7 @@ import interfaces.SaveRecipeListener;
 import javax.swing.DefaultListModel;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -31,7 +32,7 @@ import java.util.Collections;
 import javax.swing.JList;
 import javax.swing.JTextPane;
 
-public class BrowseRecipesScreen extends JFrame implements SaveRecipeListener{
+public class BrowseRecipesScreen extends JFrame implements SaveRecipeListener {
 
 	/**
 	 * 
@@ -41,6 +42,7 @@ public class BrowseRecipesScreen extends JFrame implements SaveRecipeListener{
 	protected JList<String> list;
 	protected DefaultListModel<String> recipesListModel;
 	protected JTextPane textPane;
+	protected JLabel lblRecipenamelabel;
 
 	/**
 	 * Create the frame.
@@ -51,52 +53,45 @@ public class BrowseRecipesScreen extends JFrame implements SaveRecipeListener{
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		contentPane.setLayout(new FormLayout(new ColumnSpec[] {
-				ColumnSpec.decode("10dlu"),
-				ColumnSpec.decode("max(100dlu;default):grow"),
-				ColumnSpec.decode("max(20dlu;default)"),
-				ColumnSpec.decode("max(150dlu;default):grow"),
-				ColumnSpec.decode("10dlu"),},
-			new RowSpec[] {
-				RowSpec.decode("top:10dlu"),
-				FormFactory.DEFAULT_ROWSPEC,
-				RowSpec.decode("10dlu"),
-				RowSpec.decode("max(300dlu;default):grow"),
-				RowSpec.decode("10dlu"),}));
-		
+		contentPane.setLayout(new FormLayout(new ColumnSpec[] { ColumnSpec.decode("10dlu"), ColumnSpec.decode("max(100dlu;default):grow"), ColumnSpec.decode("max(20dlu;default)"),
+				ColumnSpec.decode("max(150dlu;default):grow"), ColumnSpec.decode("10dlu"), }, new RowSpec[] { RowSpec.decode("top:10dlu"), FormFactory.DEFAULT_ROWSPEC,
+				RowSpec.decode("10dlu"), RowSpec.decode("max(300dlu;default):grow"), RowSpec.decode("10dlu"), }));
+
 		JLabel lblRecipeslistlabel = new JLabel("Recipes List");
 		lblRecipeslistlabel.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		contentPane.add(lblRecipeslistlabel, "2, 2, center, default");
-		
-		JLabel lblRecipenamelabel = new JLabel("Recipe Name Label");
+
+		lblRecipenamelabel = new JLabel("Recipe Name Label");
 		lblRecipenamelabel.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		contentPane.add(lblRecipenamelabel, "4, 2, center, default");
 		recipesListModel = new DefaultListModel<String>();
 		list = new JList<String>(recipesListModel);
 		list.addListSelectionListener(new ListSelectionListener() {
-			
+
 			@Override
 			public void valueChanged(ListSelectionEvent e) {
 				presentSelectedRecipe(list.getSelectedIndex());
 			}
 		});
 		contentPane.add(list, "2, 4, fill, fill");
-		
+
 		textPane = new JTextPane();
+		textPane.setFont(new Font("Lucida Grande", Font.PLAIN, 14));
 		textPane.setEditable(false);
-		contentPane.add(textPane, "4, 4, fill, fill");
+
+		JScrollPane jsp = new JScrollPane(textPane);
+		contentPane.add(jsp, "4, 4, fill, fill");
 	}
-	
-	
-	public void populateRecipeList(){
-		File folder = new File(System.getProperty("user.dir"), "recipes-list"); 
+
+	public void populateRecipeList() {
+		File folder = new File(System.getProperty("user.dir"), "recipes-list");
 		File[] listOfFiles = folder.listFiles();
 		ArrayList<String> arrayListOfRecipes = new ArrayList<String>();
 		recipesListModel.removeAllElements();
 		for (int i = 0; i < listOfFiles.length; i++) {
-		      if (listOfFiles[i].isFile()) {
-		    	 arrayListOfRecipes.add(listOfFiles[i].getName());
-		      }
+			if (listOfFiles[i].isFile()) {
+				arrayListOfRecipes.add(listOfFiles[i].getName());
+			}
 		}
 		Collections.sort(arrayListOfRecipes);
 		recipesListModel.removeAllElements();
@@ -104,39 +99,40 @@ public class BrowseRecipesScreen extends JFrame implements SaveRecipeListener{
 			recipesListModel.addElement(string);
 		}
 		list.updateUI();
+
 	}
-	
-	static String readFile(String path, Charset encoding) throws IOException 
-	{
-		
+
+	static String readFile(String path, Charset encoding) throws IOException {
+
 		byte[] encoded = Files.readAllBytes(Paths.get(path));
-		 return encoding.decode(ByteBuffer.wrap(encoded)).toString();
+		return encoding.decode(ByteBuffer.wrap(encoded)).toString();
 	}
-	
-	protected void presentSelectedRecipe(int recipeIndex){
-		if(0 <= recipeIndex  && recipeIndex < recipesListModel.capacity()){
-			File folder = new File(System.getProperty("user.dir"), "recipes-list"); 
+
+	protected void presentSelectedRecipe(int recipeIndex) {
+		if (0 <= recipeIndex && recipeIndex < recipesListModel.capacity()) {
+			File folder = new File(System.getProperty("user.dir"), "recipes-list");
 			String fileName = recipesListModel.elementAt(recipeIndex);
-			if(fileName != null){
-			File recipeFile = new File(folder, fileName);
-			if(recipeFile != null){
-				String content = null;
-				try {
-					content = readFile(recipeFile.toString(), StandardCharsets.UTF_8);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+			if (fileName != null) {
+				lblRecipenamelabel.setText(fileName);
+				File recipeFile = new File(folder, fileName);
+				if (recipeFile != null) {
+					String content = null;
+					try {
+						content = readFile(recipeFile.toString(), StandardCharsets.UTF_8);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					if (content != null) {
+						textPane.setText(content);
+					}
 				}
-				if(content != null){
-					textPane.setText(content);
-				}
-			}
 			}
 		}
 	}
 
 	@Override
 	public void newRecipeSaved() {
-		populateRecipeList();		
+		populateRecipeList();
 	}
 }

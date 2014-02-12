@@ -2,13 +2,11 @@ package appliacation.screens;
 
 import interfaces.RecipeSeekerListener;
 
-import java.io.File;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -18,8 +16,9 @@ import gate.Document;
 import gate.FeatureMap;
 import gate.GateConstants;
 import gate.GateManager;
+import gate.StandAloneAnnie.SortedAnnotationList;
 import gate.corpora.RepositioningInfo;
-import gate.util.Pair;
+import gate.util.InvalidOffsetException;
 
 public class BrowseSearchedRecipesScreen extends BrowseRecipesScreen implements RecipeSeekerListener {
 
@@ -74,10 +73,15 @@ public class BrowseSearchedRecipesScreen extends BrowseRecipesScreen implements 
 
 		setVisible(true);
 		populateRecipeList();
+		if(recipesPaths.size() > 0){
+			list.setSelectedIndex(0);
+		}
 	}
 
 	protected void presentSelectedRecipe(int recipeIndex) {
 		if (0 <= recipeIndex && recipeIndex < recipesListModel.capacity()) {
+			String fileName = recipesPaths.get(recipeIndex);
+			lblRecipenamelabel.setText(fileName);
 			Document selectedDocument = searchedDocuments.get(recipeIndex);
 			ArrayList<Annotation> allAnnotationsForSelectedDocument = new ArrayList<Annotation>();
 
@@ -105,16 +109,24 @@ public class BrowseSearchedRecipesScreen extends BrowseRecipesScreen implements 
 
 		String startTagPart_1 = "<span GateID=\"";
 		String startTagPart_2 = "\" title=\"";
-		String startTagPart_3_color_red = "\" style=\"background:Red;\">";
+		String startTagPart_3_color_red = "\" style=\"background:#33CCFF;\">";
 		String endTag = "</span>";
 
 		FeatureMap features = document.getFeatures();
 		String originalContent = (String) features.get(GateConstants.ORIGINAL_DOCUMENT_CONTENT_FEATURE_NAME);
 		RepositioningInfo info = (RepositioningInfo) features.get(GateConstants.DOCUMENT_REPOSITIONING_INFO_FEATURE_NAME);
 
+		//sort annotations
+		SortedAnnotationList sortedAnnotations = new SortedAnnotationList();
+		for (Annotation currAnnot : annotations) {
+			sortedAnnotations.addSortedExclusive(currAnnot);
+		}
+		
 		if (originalContent != null && info != null) {
 			StringBuffer editableContent = new StringBuffer(originalContent);
-			for (Annotation currAnnot : annotations) {
+			
+			for (int i = sortedAnnotations.size() - 1; i >= 0; --i) {
+				Annotation currAnnot = sortedAnnotations.get(i);
 				if (currAnnot.getType().equals("Ingredient")) {
 					insertPositionStart = currAnnot.getStartNode().getOffset().longValue();
 					insertPositionStart = info.getOriginalPos(insertPositionStart);
@@ -129,21 +141,32 @@ public class BrowseSearchedRecipesScreen extends BrowseRecipesScreen implements 
 						editableContent.insert((int) insertPositionStart, startTagPart_1);
 					}
 				} // if
-			} // for
-			editableContent.insert(0, "<font face=\"Lucida Grande\" size=\"13\">");
+			}
+			editableContent.insert(0, "<font face=\"Lucida Grande\" size=\"3.5\">");
 			editableContent.insert(0, "<html>");
 			editableContent.append("</font>");
 			editableContent.append("</html>");
 			String result = editableContent.toString();
-			result = result.replaceAll("(\r\n|\n)", "<br />");
+			result = result.replaceAll("(\r\n|\n)", "<br/>");
 			return result;
 		} else if (originalContent != null) {
 			StringBuffer editableContent = new StringBuffer(originalContent);
-			for (Annotation currAnnot : annotations) {
+			for (int i = sortedAnnotations.size() - 1; i >= 0; --i) {
+				Annotation currAnnot = sortedAnnotations.get(i);
 				if (currAnnot.getType().equals("Ingredient")) {
 					insertPositionStart = currAnnot.getStartNode().getOffset().longValue();
 					insertPositionEnd = currAnnot.getEndNode().getOffset().longValue();
 					if (insertPositionEnd != -1 && insertPositionStart != -1) {
+					
+						 try {
+							String text = document.getContent().getContent(currAnnot.getStartNode().getOffset(),
+							        		 currAnnot.getEndNode().getOffset()).toString();
+							System.out.println(text);
+						} catch (InvalidOffsetException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						
 						editableContent.insert((int) insertPositionEnd, endTag);
 						editableContent.insert((int) insertPositionStart, startTagPart_3_color_red);
 						editableContent.insert((int) insertPositionStart, currAnnot.getType());
@@ -153,12 +176,12 @@ public class BrowseSearchedRecipesScreen extends BrowseRecipesScreen implements 
 					}
 				} // if
 			} // for
-			editableContent.insert(0, "<font face=\"Lucida Grande\" size=\"13\">");
+			editableContent.insert(0, "<font face=\"Lucida Grande\" size=\"3.5\">");
 			editableContent.insert(0, "<html>");
 			editableContent.append("</font>");
 			editableContent.append("</html>");
 			String result = editableContent.toString();
-			result = result.replaceAll("(\r\n|\n)", "<br />");
+			result = result.replaceAll("(\r\n|\n)", "<br/>");
 			return result;
 
 		}

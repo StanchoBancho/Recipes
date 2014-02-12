@@ -33,6 +33,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 
 import org.apache.commons.io.FilenameUtils;
+import java.awt.Font;
 
 public class AddRecipeScreen extends JFrame {
 
@@ -75,31 +76,18 @@ public class AddRecipeScreen extends JFrame {
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
-		contentPane.setLayout(new FormLayout(new ColumnSpec[] {
-				FormFactory.LABEL_COMPONENT_GAP_COLSPEC,
-				ColumnSpec.decode("max(120dlu;default):grow"),
-				ColumnSpec.decode("default:grow"),
-				ColumnSpec.decode("max(120dlu;min):grow"),
-				FormFactory.RELATED_GAP_COLSPEC, }, new RowSpec[] {
-				RowSpec.decode("10dlu"), FormFactory.DEFAULT_ROWSPEC,
-				RowSpec.decode("10dlu"),
-				RowSpec.decode("max(140dlu;default):grow"),
-				RowSpec.decode("7dlu"), FormFactory.RELATED_GAP_ROWSPEC,
-				RowSpec.decode("28px"), RowSpec.decode("bottom:default"),
-				RowSpec.decode("bottom:3dlu"), FormFactory.DEFAULT_ROWSPEC,
-				RowSpec.decode("bottom:3dlu"),
-				RowSpec.decode("bottom:default"),
-				RowSpec.decode("bottom:3dlu"),
-				RowSpec.decode("bottom:default"),
-				RowSpec.decode("bottom:3dlu"),
-				RowSpec.decode("bottom:default"),
-				RowSpec.decode("bottom:3dlu"),
-				RowSpec.decode("bottom:default"), }));
+		contentPane.setLayout(new FormLayout(new ColumnSpec[] { FormFactory.LABEL_COMPONENT_GAP_COLSPEC, ColumnSpec.decode("max(120dlu;default):grow"),
+				ColumnSpec.decode("default:grow"), ColumnSpec.decode("max(120dlu;min):grow"), FormFactory.RELATED_GAP_COLSPEC, }, new RowSpec[] { RowSpec.decode("10dlu"),
+				FormFactory.DEFAULT_ROWSPEC, RowSpec.decode("10dlu"), RowSpec.decode("max(140dlu;default):grow"), RowSpec.decode("7dlu"), FormFactory.RELATED_GAP_ROWSPEC,
+				RowSpec.decode("28px"), RowSpec.decode("bottom:default"), RowSpec.decode("bottom:3dlu"), FormFactory.DEFAULT_ROWSPEC, RowSpec.decode("bottom:3dlu"),
+				RowSpec.decode("bottom:default"), RowSpec.decode("bottom:3dlu"), RowSpec.decode("bottom:default"), RowSpec.decode("bottom:3dlu"), RowSpec.decode("bottom:default"),
+				RowSpec.decode("bottom:3dlu"), RowSpec.decode("bottom:default"), }));
 
 		JLabel lblNewRecipeText = new JLabel("New Recipe Text");
 		contentPane.add(lblNewRecipeText, "2, 2, 3, 1, center, default");
 
 		textPane = new JTextPane();
+		textPane.setFont(new Font("Lucida Grande", Font.PLAIN, 14));
 		textPane.setToolTipText("Enter Recipe Here");
 		textPane.getDocument().addDocumentListener(new DocumentListener() {
 
@@ -152,6 +140,7 @@ public class AddRecipeScreen extends JFrame {
 
 						textPane.setContentType("text/html");
 						textPane.setText(parsedText);
+						textPane.updateUI();
 					}
 				}
 				isRecipeProcessed = !isRecipeProcessed;
@@ -188,8 +177,7 @@ public class AddRecipeScreen extends JFrame {
 	}
 
 	private void initiateRecipeSavingProcess(String text) {
-		String recipeDirectory = new File(System.getProperty("user.dir"),
-				"recipes-list").toString();
+		String recipeDirectory = new File(System.getProperty("user.dir"), "recipes-list").toString();
 		JFileChooser chooser = new JFileChooser(recipeDirectory);
 
 		int returnVal = chooser.showSaveDialog(this);
@@ -198,12 +186,10 @@ public class AddRecipeScreen extends JFrame {
 			PrintStream out = null;
 			try {
 				File file = chooser.getSelectedFile();
-				if (FilenameUtils.getExtension(file.getName())
-						.equalsIgnoreCase("txt")) {
+				if (FilenameUtils.getExtension(file.getName()).equalsIgnoreCase("txt")) {
 					// filename is OK as-is
 				} else {
-					file = new File(file.getParentFile(),
-							FilenameUtils.getBaseName(file.getName()) + ".txt");
+					file = new File(file.getParentFile(), FilenameUtils.getBaseName(file.getName()) + ".txt");
 					// ALTERNATIVELY: remove the extension (if any) and replace
 					// it with ".xml"
 				}

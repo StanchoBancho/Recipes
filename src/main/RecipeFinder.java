@@ -122,16 +122,19 @@ public class RecipeFinder {
 					recipeFinder.searchRecipeScreen = searchScreen;
 
 					BrowseSearchedRecipesScreen browseSeachedRecipesScreen = new BrowseSearchedRecipesScreen(null);
+					browseSeachedRecipesScreen.setTitle("Browse Searched Recipes");
 					browseSeachedRecipesScreen.gateManager = recipeFinder.getShareGateManager();
 					recipeFinder.browseSearchedRecipeScreen = browseSeachedRecipesScreen;
 					searchScreen.addSaveRecipeListener(browseSeachedRecipesScreen);
 					
 					//setup add and browse recipe screens
 					BrowseRecipesScreen browseRecipeScreen = new BrowseRecipesScreen();
+					browseRecipeScreen.setTitle("Browse All Recipes");
 					browseRecipeScreen.populateRecipeList();
 					recipeFinder.browseRecipeScreen = browseRecipeScreen;
 					
 					AddRecipeScreen addRecipeScreen = new AddRecipeScreen(); 
+					addRecipeScreen.setTitle("Add New Recipe");
 					addRecipeScreen.setGateManager(recipeFinder.getShareGateManager());
 					addRecipeScreen.addSaveRecipeListener(browseRecipeScreen);
 					recipeFinder.addRecipeScreen = addRecipeScreen;
