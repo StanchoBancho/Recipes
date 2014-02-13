@@ -61,7 +61,7 @@ public class BrowseRecipesScreen extends JFrame implements SaveRecipeListener {
 		lblRecipeslistlabel.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		contentPane.add(lblRecipeslistlabel, "2, 2, center, default");
 
-		lblRecipenamelabel = new JLabel("Recipe Name Label");
+		lblRecipenamelabel = new JLabel("");
 		lblRecipenamelabel.setFont(new Font("Lucida Grande", Font.PLAIN, 15));
 		contentPane.add(lblRecipenamelabel, "4, 2, center, default");
 		recipesListModel = new DefaultListModel<String>();
@@ -89,7 +89,7 @@ public class BrowseRecipesScreen extends JFrame implements SaveRecipeListener {
 		ArrayList<String> arrayListOfRecipes = new ArrayList<String>();
 		recipesListModel.removeAllElements();
 		for (int i = 0; i < listOfFiles.length; i++) {
-			if (listOfFiles[i].isFile()) {
+			if (listOfFiles[i].isFile() && !listOfFiles[i].getPath().endsWith("DS_Store")) {
 				arrayListOfRecipes.add(listOfFiles[i].getName());
 			}
 		}

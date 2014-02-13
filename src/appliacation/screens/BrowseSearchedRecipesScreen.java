@@ -6,7 +6,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 
 import org.apache.commons.io.FilenameUtils;
 
@@ -37,6 +36,8 @@ public class BrowseSearchedRecipesScreen extends BrowseRecipesScreen implements 
 	 */
 	public BrowseSearchedRecipesScreen(ArrayList<String> recipesPaths) {
 		super();
+		setBounds(900, 100, 900, 800);
+
 		this.recipesPaths = recipesPaths;
 		textPane.setContentType("text/html");
 	}

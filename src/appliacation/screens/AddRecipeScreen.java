@@ -3,6 +3,7 @@ package appliacation.screens;
 import gate.GateManager;
 import interfaces.SaveRecipeListener;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,8 +17,6 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
-import javax.swing.text.BadLocationException;
-import javax.swing.text.DefaultEditorKit;
 
 import com.jgoodies.forms.layout.FormLayout;
 import com.jgoodies.forms.layout.ColumnSpec;
@@ -33,6 +32,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextPane;
 
 import org.apache.commons.io.FilenameUtils;
+
 import java.awt.Font;
 
 public class AddRecipeScreen extends JFrame {
@@ -70,7 +70,7 @@ public class AddRecipeScreen extends JFrame {
 	 */
 	public AddRecipeScreen() {
 		isRecipeProcessed = false;
-		setBounds(0, 0, 700, 700);
+		setBounds(0, 0, 700, 550);
 		setMinimumSize(new Dimension(550, 450));
 
 		contentPane = new JPanel();
@@ -85,7 +85,7 @@ public class AddRecipeScreen extends JFrame {
 
 		JLabel lblNewRecipeText = new JLabel("New Recipe Text");
 		contentPane.add(lblNewRecipeText, "2, 2, 3, 1, center, default");
-
+		
 		textPane = new JTextPane();
 		textPane.setFont(new Font("Lucida Grande", Font.PLAIN, 14));
 		textPane.setToolTipText("Enter Recipe Here");
@@ -156,13 +156,20 @@ public class AddRecipeScreen extends JFrame {
 		contentPane.add(lblLegend, "2, 10");
 
 		lblAmount = new JLabel("Amount");
+		Color ammountColor= Color.decode("#FF6666");
+		lblAmount.setForeground(ammountColor);
 		contentPane.add(lblAmount, "4, 12");
-
-		lblIngredient = new JLabel("Ingredient");
-		contentPane.add(lblIngredient, "4, 14");
-
-		lblMeasure = new JLabel("Measure");
-		contentPane.add(lblMeasure, "4, 16");
+		Color ingredientColor= Color.decode("#A8A8A8");
+		Color measureColor= Color.decode("#33CCFF");
+				
+						lblMeasure = new JLabel("Measure");
+						
+						contentPane.add(lblMeasure, "4, 14");
+		
+				lblIngredient = new JLabel("Ingredient");
+				lblIngredient.setForeground(ingredientColor);
+				contentPane.add(lblIngredient, "4, 16");
+				lblIngredient.setForeground(measureColor);
 		btnSaveRecipe.addActionListener(new ActionListener() {
 
 			@Override
@@ -175,6 +182,14 @@ public class AddRecipeScreen extends JFrame {
 			}
 		});
 	}
+	
+//	public void DrawingColor()
+//    {
+//        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+//        getContentPane().add(new MyComponent());
+//        setSize(400,400);
+//        setVisible(true);
+//    }
 
 	private void initiateRecipeSavingProcess(String text) {
 		String recipeDirectory = new File(System.getProperty("user.dir"), "recipes-list").toString();

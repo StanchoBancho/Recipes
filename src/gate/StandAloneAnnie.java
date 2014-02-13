@@ -22,9 +22,6 @@ import java.util.*;
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLDecoder;
-
-import org.apache.commons.io.FilenameUtils;
 
 import gate.util.*;
 import gate.util.persistence.PersistenceManager;
